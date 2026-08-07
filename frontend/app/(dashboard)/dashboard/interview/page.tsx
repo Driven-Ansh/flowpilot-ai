@@ -106,9 +106,10 @@ export default function InterviewPage() {
   const [selections, setSelections] = useState({ process: '', time: '', pain: '' });
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Initialize first AI message if empty
+  const hasInitRef = useRef(false);
   useEffect(() => {
-    if (interviewHistory.length === 0) {
+    if (interviewHistory.length === 0 && !hasInitRef.current) {
+      hasInitRef.current = true;
       addMessage('assistant', INTERVIEW_STEPS[0].aiQuestion as string);
     }
   }, []);

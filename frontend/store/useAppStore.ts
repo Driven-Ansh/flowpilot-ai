@@ -97,6 +97,14 @@ interface AppState {
   reset: () => void;
 }
 
+const DEFAULT_COMPANY: CompanyProfile = {
+  company_name: 'FlowPilot AI Enterprise',
+  industry: 'FinTech',
+  company_size: '6-15 (Early team)',
+  stage: 'MVP / Early traction',
+  description: 'AI Workflow Automation & Operations Advisory',
+};
+
 export const useAppStore = create<AppState>()(
   persist(
     (set) => ({
@@ -109,7 +117,7 @@ export const useAppStore = create<AppState>()(
       toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
 
       // Company & Session
-      company: null,
+      company: DEFAULT_COMPANY,
       sessionId: null,
       companyContext: null,
       setCompany: (company) => set({ company }),
