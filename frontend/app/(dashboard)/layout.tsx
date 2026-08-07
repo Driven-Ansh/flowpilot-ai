@@ -1,22 +1,20 @@
 'use client';
 
 /**
- * Dashboard Layout
- * 
- * Provides a clean, un-congested, fully responsive layout.
- * Nimblize-style spacious layout structure with flex-based sidebar.
+ * FlowPilot AI Main Dashboard Layout
+ * Clean flex layout matching reference UI.
  */
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen bg-[var(--background)] overflow-hidden">
+    <div className="flex h-screen bg-[#070913] text-slate-100 overflow-hidden font-sans">
       <Sidebar />
-      <div className="flex flex-col flex-1 min-w-0 h-full overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         <Header />
-        <main className="flex-1 overflow-y-auto p-6 md:p-8">
-          <div className="max-w-7xl mx-auto w-full pb-8">
+        <main className="flex-1 overflow-y-auto p-8 space-y-8">
+          <div className="max-w-7xl mx-auto w-full space-y-8">
             {children}
           </div>
         </main>
