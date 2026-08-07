@@ -1,16 +1,21 @@
 # FlowPilot AI – AI Workflow Automation Advisor
 
-![FlowPilot AI Banner](https://raw.githubusercontent.com/flowpilot/assets/main/banner.png)
-
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/flowpilot/flowpilot-ai)
+[![Live Demo](https://img.shields.io/badge/Vercel-Live--Demo-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://flowpilot-ai-chi.vercel.app)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Driven-Ansh/flowpilot-ai)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/Driven-Ansh/flowpilot-ai)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
-[![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.3-black.svg)](https://nextjs.org/)
 [![Quart](https://img.shields.io/badge/Quart-Async-purple.svg)](https://pgjones.gitlab.io/quart/)
-[![Next.js](https://img.shields.io/badge/Next.js-14.2-black.svg)](https://nextjs.org/)
-[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-emerald.svg)](https://supabase.com/)
 
 > **FlowPilot AI** is an enterprise-grade AI Workflow Automation Advisor platform designed to help startups and scaling businesses discover repetitive operational processes, quantify potential ROI from AI automation, simulate before/after workflow graphs, and generate actionable, prioritized implementation roadmaps.
+
+---
+
+## 🌐 Live Web Application & Deployment Links
+
+- **Main Vercel App**: [https://flowpilot-ai-chi.vercel.app](https://flowpilot-ai-chi.vercel.app)
+- **Production Alias**: [https://flowpilot-dbkw1xhcs-anshulsinhask-3885s-projects.vercel.app](https://flowpilot-dbkw1xhcs-anshulsinhask-3885s-projects.vercel.app)
+- **GitHub Repository**: [https://github.com/Driven-Ansh/flowpilot-ai](https://github.com/Driven-Ansh/flowpilot-ai)
 
 ---
 
@@ -36,12 +41,27 @@ FlowPilot AI operates as an automated senior AI strategy consultant:
 
 ---
 
+## 🖥️ Live Feature Deep-Dive
+
+Explore the platform live across all core advisory modules:
+
+- 🎤 **[AI Founder Discovery Advisor](https://flowpilot-ai-chi.vercel.app/dashboard/interview)**: Conversational multi-turn discovery wizard with quick choice chips and intelligent extraction.
+- 🔀 **[Digital Twin Workflow Graph](https://flowpilot-ai-chi.vercel.app/dashboard/workflow)**: Interactive React Flow visualizer contrasting manual bottlenecks vs 98%+ AI speedup.
+- 🎯 **[Automation Opportunities Matrix](https://flowpilot-ai-chi.vercel.app/dashboard/opportunities)**: Feasibility, Impact & ROI scored leaderboard for high-value targets.
+- 💰 **[Interactive ROI Calculator](https://flowpilot-ai-chi.vercel.app/dashboard/roi)**: Dynamic parameter sliders (hourly rates, budgets) with 24-month cumulative area chart.
+- 🗺️ **[Phased Implementation Roadmap](https://flowpilot-ai-chi.vercel.app/dashboard/roadmap)**: 24-week rollout timeline organized into Quick Wins, Core Automation & AI Agents.
+- 🛒 **[AI Tool Marketplace](https://flowpilot-ai-chi.vercel.app/dashboard/marketplace)**: Curated vendor tech stack directory with complexity ratings & price models.
+- 🛡️ **[Risk & Compliance Dashboard](https://flowpilot-ai-chi.vercel.app/dashboard/risk)**: Governance score meter, GDPR data privacy mitigations & model accuracy safeguards.
+- 📄 **[Executive Advisory PDF Report](https://flowpilot-ai-chi.vercel.app/dashboard/report)**: One-click vector PDF generation and board-ready export.
+
+---
+
 ## 🏗️ Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                        FRONTEND (Vercel)                      │
-│  Next.js 14 + TypeScript + TailwindCSS + shadcn/ui           │
+│  Next.js 16 + TypeScript + TailwindCSS + shadcn/ui           │
 │  Framer Motion + React Flow + Recharts                        │
 │  Zustand State Store + Supabase Client                        │
 └────────────────────────┬────────────────────────────────────┘
@@ -61,18 +81,6 @@ FlowPilot AI operates as an automated senior AI strategy consultant:
 
 ---
 
-## 🎨 Screenshots & UI Showcase
-
-| Executive Dashboard | AI Founder Interview |
-| :---: | :---: |
-| ![Dashboard](https://raw.githubusercontent.com/flowpilot/assets/main/dashboard.png) | ![Interview](https://raw.githubusercontent.com/flowpilot/assets/main/interview.png) |
-
-| Workflow Digital Twin | ROI Analytics |
-| :---: | :---: |
-| ![Workflow](https://raw.githubusercontent.com/flowpilot/assets/main/workflow.png) | ![ROI](https://raw.githubusercontent.com/flowpilot/assets/main/roi.png) |
-
----
-
 ## ⭐ Core Features
 
 1. 🎤 **AI Founder Interview**: Conversational multi-turn discovery wizard with streaming response support.
@@ -88,17 +96,17 @@ FlowPilot AI operates as an automated senior AI strategy consultant:
 11. 🗺️ **Implementation Roadmap**: Phased 24-week rollout schedule broken into Quick Wins, Core Automation, and Advanced AI.
 12. 📈 **Executive Dashboard**: Unified overview featuring KPI cards, opportunity leaderboards, and trajectory charts.
 13. 📄 **Exportable PDF Report**: One-click generation of board-ready PDF executive summaries via ReportLab.
-14. 🌙 **Responsive Dark/Light UI**: Tailored glassmorphic aesthetic built with TailwindCSS and Framer Motion.
+14. 🌙 **Responsive Dark UI**: Tailored glassmorphic aesthetic built with TailwindCSS and Framer Motion.
 
 ---
 
-## 🛠️ Technology Stack & Selection Rationale
+## 🛠️ Technology Stack
 
 | Layer | Tool | Rationale |
 | --- | --- | --- |
-| **Frontend Framework** | Next.js 14 (App Router) | Server components, optimized routing, native Vercel deployment. |
+| **Frontend Framework** | Next.js 16 (App Router) | Server components, optimized routing, native Vercel deployment. |
 | **Language** | TypeScript 5.0 | Strict type safety across components, store, and API wrappers. |
-| **Styling** | TailwindCSS + CSS Variables | Maximum styling velocity with custom dark/light theme tokens. |
+| **Styling** | TailwindCSS v3 + CSS Variables | Maximum styling velocity with custom dark theme tokens matching Nimblize design system. |
 | **Animations** | Framer Motion | Smooth layout transitions, modal reveals, and SVG ring animations. |
 | **Visual Graphs** | React Flow (`@xyflow/react`) | Professional workflow graph rendering with custom node styling and animated edges. |
 | **Analytics** | Recharts | Responsive SVG charts for monthly cumulative ROI and savings pie charts. |
@@ -115,7 +123,7 @@ FlowPilot AI operates as an automated senior AI strategy consultant:
 
 ```
 flowpilot-ai/
-├── frontend/                          # Next.js 14 App Router application
+├── frontend/                          # Next.js 16 App Router application
 │   ├── app/                           # App Router pages & layouts
 │   │   ├── (dashboard)/               # Protected dashboard routes
 │   │   │   ├── dashboard/             # Executive dashboard home
@@ -132,12 +140,11 @@ flowpilot-ai/
 │   │   ├── layout.tsx                 # Root HTML layout with providers
 │   │   └── page.tsx                   # Marketing landing page
 │   ├── components/                    # UI & layout components
+│   │   ├── auth/                      # Personalized AuthModal component
 │   │   ├── layout/                    # Sidebar, Header, Navigation
+│   │   ├── ui/                        # Animated FlowPilotLogo, SplashScreen
 │   │   └── providers/                 # ThemeProvider and context wrappers
-│   ├── lib/                           # Utility functions & API wrappers
-│   │   ├── api.ts                     # Unified backend API client
-│   │   ├── supabase.ts                # Supabase client instantiation
-│   │   └── utils.ts                   # Formatting & style helpers
+│   ├── lib/                           # Utility functions & API wrappers with fallback mocks
 │   ├── store/                         # Zustand global state store (`useAppStore.ts`)
 │   └── types/                         # Shared TypeScript interfaces
 │
@@ -155,7 +162,6 @@ flowpilot-ai/
 │
 ├── docs/                              # Comprehensive developer documentation (15 files)
 ├── supabase/                          # Database migrations & schemas
-├── .gitignore                         # Comprehensive monorepo gitignore
 └── README.md                          # Main project documentation
 ```
 
@@ -170,7 +176,7 @@ flowpilot-ai/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/flowpilot/flowpilot-ai.git
+git clone https://github.com/Driven-Ansh/flowpilot-ai.git
 cd flowpilot-ai
 ```
 
@@ -184,7 +190,6 @@ venv\Scripts\activate
 source venv/bin/activate
 
 pip install -r requirements.txt
-cp .env.example .env
 python run.py
 ```
 *Backend runs at `http://localhost:8000` (Mock mode is enabled automatically if OpenAI/Supabase keys are omitted).*
@@ -194,125 +199,9 @@ In a new terminal window:
 ```bash
 cd frontend
 npm install
-cp .env.local.example .env.local
 npm run dev
 ```
 *Frontend runs at `http://localhost:3000`.*
-
----
-
-## 🔑 Environment Variables
-
-### Frontend (`frontend/.env.local`)
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000/api
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-### Backend (`backend/.env`)
-```env
-PORT=8000
-FLASK_ENV=development
-SECRET_KEY=dev-secret-key
-CORS_ORIGINS=http://localhost:3000
-OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-4o
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_KEY=your_supabase_service_role_key
-```
-
----
-
-## 📡 API Reference Overview
-
-| Endpoint | Method | Description |
-| --- | --- | --- |
-| `/api/health` | GET | Service health and mock mode status check. |
-| `/api/interview/start` | POST | Initializes a new founder interview session. |
-| `/api/interview/message` | POST | Sends user message and receives AI advisor response. |
-| `/api/interview/extract` | POST | Extracts structured business process JSON from interview history. |
-| `/api/processes/` | POST | Enriches discovered processes with automation metrics. |
-| `/api/workflow/generate` | POST | Generates React Flow nodes & edges for before/after states. |
-| `/api/opportunities/` | POST | Scores and ranks automation opportunities. |
-| `/api/roi/calculate` | POST | Returns 24-month financial projections and ROI metrics. |
-| `/api/roadmap/generate` | POST | Generates phased implementation timeline data. |
-| `/api/marketplace/` | GET | Fetches curated list of enterprise AI tools. |
-| `/api/risk/analyze` | POST | Evaluates risk levels across security, accuracy, and compliance. |
-| `/api/report/generate` | POST | Generates and serves a downloadable PDF executive report. |
-
-*See [`/docs/api-reference.md`](file:///C:/Users/amazi/.gemini/antigravity/scratch/flowpilot-ai/docs/api-reference.md) for full request/response payloads.*
-
----
-
-## 📊 Database Schema (Supabase PostgreSQL)
-
-```sql
-CREATE TABLE companies (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  industry TEXT,
-  size TEXT,
-  stage TEXT,
-  description TEXT,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-
-CREATE TABLE business_processes (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  company_id UUID REFERENCES companies(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  department TEXT,
-  frequency TEXT,
-  time_per_week NUMERIC,
-  people_involved INTEGER,
-  pain_points JSONB DEFAULT '[]',
-  tools_used JSONB DEFAULT '[]',
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-
-CREATE TABLE automation_opportunities (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  company_id UUID REFERENCES companies(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  feasibility_score NUMERIC,
-  impact_score NUMERIC,
-  roi_score NUMERIC,
-  estimated_annual_savings NUMERIC,
-  recommended_tools JSONB DEFAULT '[]',
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-```
-
----
-
-## 🚀 Deployment Guide
-
-### Frontend Deployment (Vercel)
-1. Push repository to GitHub.
-2. Import project into Vercel and set Root Directory to `frontend`.
-3. Configure `NEXT_PUBLIC_API_URL` to point to your Render backend URL.
-4. Deploy.
-
-### Backend Deployment (Render)
-1. Create a new Web Service on Render.
-2. Connect repository and set Root Directory to `backend`.
-3. Set environment to `Python 3`.
-4. Build Command: `pip install -r requirements.txt`
-5. Start Command: `hypercorn run:app --bind 0.0.0.0:$PORT`
-6. Add environment variables (`OPENAI_API_KEY`, `CORS_ORIGINS`).
-
----
-
-## ❓ FAQ & Troubleshooting
-
-**Q: Can I run FlowPilot AI locally without OpenAI or Supabase keys?**
-> **Yes!** FlowPilot AI includes an automatic Mock Mode. If API keys are omitted in `.env`, both frontend and backend seamlessly utilize realistic demonstration datasets.
-
-**Q: How are ROI numbers calculated?**
-> ROI is derived from total team hours saved per week × hourly wage rate × 52 weeks, combined with direct software/license cost reductions, minus estimated setup and integration expenses.
 
 ---
 
