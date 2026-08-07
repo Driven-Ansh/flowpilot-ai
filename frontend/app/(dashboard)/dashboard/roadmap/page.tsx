@@ -1,62 +1,60 @@
 'use client';
 
 /**
- * Implementation Roadmap Page
+ * Implementation Roadmap Page (Nimblize Clean Aesthetic)
  * 
- * Visual phase-by-phase implementation roadmap with:
- * - Phased timeline view
- * - Item cards with effort, owner, tools
- * - ROI estimates per initiative
- * - Status tracking
+ * Phased 24-week rollout schedule across Quick Wins, Core Automation, and Advanced AI.
  */
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Map, Clock, Users, Zap, CheckCircle, Circle, DollarSign } from 'lucide-react';
+import { Map, Clock, Users, Zap, CheckCircle, Circle, DollarSign, Calendar, Layers } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { roadmapAPI } from '@/lib/api';
 import type { RoadmapPhase, RoadmapItem } from '@/types';
 
 function RoadmapItemCard({ item, phaseColor }: { item: RoadmapItem; phaseColor: string }) {
   const effortColors: Record<string, string> = {
-    Low: '#10b981',
-    Medium: '#f59e0b',
-    High: '#f43f5e',
+    Low: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20',
+    Medium: 'text-amber-400 bg-amber-400/10 border-amber-400/20',
+    High: 'text-rose-400 bg-rose-400/10 border-rose-400/20',
   };
 
   return (
-    <div
-      className="p-5 rounded-xl border hover:border-white/15 transition-all"
-      style={{ background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}
-    >
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <Circle className="w-3 h-3" style={{ color: phaseColor }} />
-            <h4 className="font-semibold text-white text-sm">{item.title}</h4>
+    <div className="p-6 rounded-2xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/20 transition-all space-y-4">
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <Circle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: phaseColor }} />
+            <h4 className="font-bold text-white text-base" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              {item.title}
+            </h4>
           </div>
-          <p className="text-xs text-white/40 leading-relaxed">{item.description}</p>
+          <p className="text-xs text-white/50 leading-relaxed pl-5">{item.description}</p>
         </div>
-        <span className="text-xs font-bold px-2 py-1 rounded-lg flex-shrink-0" style={{ color: '#10b981', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}>
+        <span className="text-xs font-bold px-3 py-1 rounded-xl text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 flex-shrink-0">
           {item.roi_estimate}
         </span>
       </div>
 
-      <div className="flex items-center gap-4 text-xs text-white/30">
-        <span className="flex items-center gap-1">
-          <Clock className="w-3 h-3" /> {item.estimated_weeks}w
+      <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-white/5 text-xs text-white/40">
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5 text-indigo-400" /> {item.estimated_weeks} weeks
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Users className="w-3.5 h-3.5 text-cyan-400" /> Owner: {item.owner}
+          </span>
+        </div>
+        <span className={`px-2.5 py-0.5 rounded-full border font-semibold ${effortColors[item.effort] || effortColors.Low}`}>
+          {item.effort} Effort
         </span>
-        <span className="flex items-center gap-1">
-          <Users className="w-3 h-3" /> {item.owner}
-        </span>
-        <span style={{ color: effortColors[item.effort] }}>{item.effort} effort</span>
       </div>
 
-      <div className="flex flex-wrap gap-1.5 mt-3">
+      <div className="flex flex-wrap gap-2 pt-1">
         {item.tools.map((tool) => (
           <span
             key={tool}
-            className="text-xs px-2 py-0.5 rounded-md"
-            style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.15)', color: '#a5b4fc' }}
+            className="text-xs font-semibold px-3 py-1 rounded-lg border border-indigo-500/20 bg-indigo-500/10 text-indigo-300"
           >
             {tool}
           </span>
@@ -68,16 +66,13 @@ function RoadmapItemCard({ item, phaseColor }: { item: RoadmapItem; phaseColor: 
 
 export default function RoadmapPage() {
   const { roadmapData, setRoadmapData } = useAppStore();
-  const [loading, setLoading] = useState(false);
   const [localRoadmap, setLocalRoadmap] = useState(roadmapData);
 
   useEffect(() => {
     if (!roadmapData) {
-      setLoading(true);
       roadmapAPI.getMock()
         .then((d) => { setLocalRoadmap(d); setRoadmapData(d); })
-        .catch(console.error)
-        .finally(() => setLoading(false));
+        .catch(console.error);
     } else {
       setLocalRoadmap(roadmapData);
     }
@@ -86,68 +81,82 @@ export default function RoadmapPage() {
   const phases: RoadmapPhase[] = localRoadmap?.phases || [];
 
   return (
-    <div className="space-y-6">
-      {/* Summary Bar */}
-      {localRoadmap && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex items-center gap-6 p-5 rounded-2xl border"
-          style={{ background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}
-        >
-          <div>
-            <p className="text-xs text-white/40">Total Duration</p>
-            <p className="text-xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>{localRoadmap.total_weeks} weeks</p>
-          </div>
-          <div className="w-px h-10 bg-white/10" />
-          <div>
-            <p className="text-xs text-white/40">Total Estimated Value</p>
-            <p className="text-xl font-black text-emerald-400" style={{ fontFamily: 'Outfit, sans-serif' }}>{localRoadmap.total_estimated_value}</p>
-          </div>
-          <div className="w-px h-10 bg-white/10" />
-          <div>
-            <p className="text-xs text-white/40">Phases</p>
-            <p className="text-xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>{phases.length}</p>
-          </div>
-        </motion.div>
-      )}
+    <div className="space-y-8 max-w-7xl mx-auto">
+      {/* Header Banner */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="p-8 rounded-3xl border border-white/10 bg-white/[0.02] flex flex-col md:flex-row md:items-center justify-between gap-6"
+      >
+        <div>
+          <h1 className="text-2xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            AI Implementation Roadmap & Rollout Schedule
+          </h1>
+          <p className="text-sm text-white/50 mt-1">
+            Phased 24-week execution timeline designed for low risk, rapid ROI, and team adoption.
+          </p>
+        </div>
 
-      {/* Phase Timeline */}
-      <div className="flex gap-2 mb-2">
-        {phases.map((phase) => (
-          <div
-            key={phase.phase}
-            className="flex-1 h-1.5 rounded-full"
-            style={{ background: phase.color, opacity: 0.8 }}
-          />
-        ))}
+        {localRoadmap && (
+          <div className="flex items-center gap-4">
+            <div className="px-5 py-3 rounded-2xl border border-indigo-500/20 bg-indigo-500/10 text-indigo-300">
+              <p className="text-xs text-white/40">Total Timeline</p>
+              <p className="text-xl font-black">{localRoadmap.total_weeks} Weeks</p>
+            </div>
+            <div className="px-5 py-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-300">
+              <p className="text-xs text-white/40">Total Target Value</p>
+              <p className="text-xl font-black">{localRoadmap.total_estimated_value}</p>
+            </div>
+          </div>
+        )}
+      </motion.div>
+
+      {/* Progress Timeline Indicator */}
+      <div className="space-y-2">
+        <div className="flex justify-between text-xs font-semibold text-white/40 uppercase tracking-wider px-1">
+          <span>Phase 1: Quick Wins (W1-W4)</span>
+          <span>Phase 2: Core Automation (W5-W12)</span>
+          <span>Phase 3: Advanced AI Agents (W13-W24)</span>
+        </div>
+        <div className="flex gap-2">
+          {phases.map((phase) => (
+            <div
+              key={phase.phase}
+              className="flex-1 h-2 rounded-full transition-all"
+              style={{ background: phase.color }}
+            />
+          ))}
+        </div>
       </div>
 
-      {/* Phases */}
-      <div className="space-y-6">
+      {/* Phases List */}
+      <div className="space-y-10">
         {phases.map((phase, pi) => (
           <motion.div
             key={phase.phase}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: pi * 0.15 }}
+            className="space-y-4"
           >
             {/* Phase Header */}
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-4">
               <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold"
-                style={{ background: phase.color + '30', border: `1px solid ${phase.color}40` }}
+                className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-base font-black flex-shrink-0"
+                style={{ background: phase.color + '25', border: `1px solid ${phase.color}40` }}
               >
-                {phase.phase}
+                P{phase.phase}
               </div>
               <div>
-                <h3 className="font-bold text-white">{phase.title}</h3>
-                <p className="text-xs text-white/40">{phase.duration_weeks} weeks · {phase.items.length} initiative{phase.items.length !== 1 ? 's' : ''}</p>
+                <h3 className="font-black text-xl text-white tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  {phase.title}
+                </h3>
+                <p className="text-xs text-white/40">Duration: {phase.duration_weeks} weeks · {phase.items.length} initiatives</p>
               </div>
             </div>
 
-            {/* Items */}
-            <div className="grid md:grid-cols-2 gap-4 pl-11">
+            {/* Initiatives Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pl-0 md:pl-14">
               {phase.items.map((item) => (
                 <RoadmapItemCard key={item.id} item={item} phaseColor={phase.color} />
               ))}

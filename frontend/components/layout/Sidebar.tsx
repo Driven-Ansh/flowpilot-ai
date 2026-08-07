@@ -63,7 +63,7 @@ export function Sidebar() {
       initial={false}
       animate={{ width: sidebarCollapsed ? 72 : 260 }}
       transition={{ duration: 0.25, ease: 'easeInOut' }}
-      className="fixed left-0 top-0 h-screen z-40 flex flex-col border-r overflow-hidden"
+      className="relative h-screen z-40 flex flex-col border-r overflow-hidden flex-shrink-0"
       style={{
         borderColor: 'rgba(255,255,255,0.07)',
         background: 'linear-gradient(180deg, #0d0c18 0%, #0a0914 100%)',

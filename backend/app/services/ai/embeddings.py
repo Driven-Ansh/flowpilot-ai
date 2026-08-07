@@ -10,7 +10,7 @@ class EmbeddingService:
     """Wraps the OpenAI embedding API for process vectorization."""
     
     def __init__(self):
-        from ..config import Config
+        from app.config import Config
         self.model = Config.OPENAI_EMBEDDING_MODEL
         self.api_key = Config.OPENAI_API_KEY
         self._client = None

@@ -1,17 +1,17 @@
 'use client';
 
 /**
- * Risk & Compliance Analysis Page
+ * Risk & Compliance Analysis Page (Nimblize Clean Aesthetic)
  */
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldAlert, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { ShieldAlert, CheckCircle2, AlertTriangle, ShieldCheck } from 'lucide-react';
 import { riskAPI } from '@/lib/api';
 import type { RiskCategory } from '@/types';
 
 function RiskBar({ score, color }: { score: number; color: string }) {
   return (
-    <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
+    <div className="w-full h-2.5 rounded-full overflow-hidden bg-white/5">
       <motion.div
         className="h-full rounded-full"
         style={{ background: color }}
@@ -25,80 +25,78 @@ function RiskBar({ score, color }: { score: number; color: string }) {
 
 export default function RiskPage() {
   const [riskData, setRiskData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
     riskAPI.getMock()
       .then(setRiskData)
-      .catch(console.error)
-      .finally(() => setLoading(false));
+      .catch(console.error);
   }, []);
 
   const categories: RiskCategory[] = riskData?.categories || [];
 
   return (
-    <div className="space-y-6">
-      {/* Overall Risk Score */}
-      {riskData && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="p-6 rounded-2xl border flex items-center gap-6"
-          style={{ background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}
-        >
-          <div className="relative w-20 h-20">
-            <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-              <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="6" />
-              <motion.circle
-                cx="40" cy="40" r="34" fill="none" stroke="#22d3ee" strokeWidth="6"
-                strokeLinecap="round"
-                strokeDasharray={2 * Math.PI * 34}
-                initial={{ strokeDashoffset: 2 * Math.PI * 34 }}
-                animate={{ strokeDashoffset: 2 * Math.PI * 34 * (1 - riskData.risk_score / 100) }}
-                transition={{ duration: 1.5 }}
-              />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-xl font-black text-white">{riskData.risk_score}</span>
-              <span className="text-xs text-white/30">/100</span>
+    <div className="space-y-8 max-w-7xl mx-auto">
+      {/* Header Banner */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="p-8 rounded-3xl border border-white/10 bg-white/[0.02] flex flex-col md:flex-row md:items-center justify-between gap-6"
+      >
+        <div>
+          <h1 className="text-2xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            Risk & Compliance Governance Analysis
+          </h1>
+          <p className="text-sm text-white/50 mt-1">
+            Evaluating data privacy, model accuracy, security, and organizational change readiness.
+          </p>
+        </div>
+
+        {riskData && (
+          <div className="flex items-center gap-4 p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-300">
+            <ShieldCheck className="w-8 h-8 flex-shrink-0" />
+            <div>
+              <p className="text-xs text-white/40">Overall Assessment</p>
+              <p className="text-lg font-black">{riskData.overall_risk_level} Risk ({riskData.risk_score}/100)</p>
             </div>
           </div>
-          <div>
-            <p className="text-sm text-white/40 mb-1">Overall Risk Level</p>
-            <p className="text-2xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>{riskData.overall_risk_level}</p>
-            <p className="text-xs text-emerald-400 mt-1">✅ Proceeding with automation is recommended</p>
-          </div>
-        </motion.div>
-      )}
+        )}
+      </motion.div>
 
-      {/* Risk Categories */}
-      <div className="grid md:grid-cols-2 gap-4">
+      {/* Risk Category Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {categories.map((cat, i) => (
           <motion.div
             key={cat.category}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="p-5 rounded-2xl border"
-            style={{ background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}
+            className="p-6 rounded-2xl border border-white/10 bg-white/[0.02] space-y-4"
           >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <ShieldAlert className="w-4 h-4" style={{ color: cat.color }} />
-                <h3 className="font-bold text-white text-sm">{cat.category}</h3>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <ShieldAlert className="w-5 h-5" style={{ color: cat.color }} />
+                <h3 className="font-bold text-white text-base" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  {cat.category}
+                </h3>
               </div>
-              <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ color: cat.color, background: cat.color + '20', border: `1px solid ${cat.color}30` }}>
-                {cat.level}
+              <span
+                className="text-xs font-bold px-3 py-1 rounded-full border"
+                style={{ color: cat.color, borderColor: `${cat.color}40`, background: `${cat.color}15` }}
+              >
+                {cat.level} Level
               </span>
             </div>
+
             <RiskBar score={cat.score} color={cat.color} />
-            <p className="text-xs text-white/50 leading-relaxed mt-3 mb-3">{cat.description}</p>
-            <div className="space-y-1.5">
+
+            <p className="text-xs text-white/60 leading-relaxed">{cat.description}</p>
+
+            <div className="space-y-2 pt-2 border-t border-white/5">
+              <p className="text-xs font-semibold text-white/40 uppercase tracking-wider">Mitigation Controls</p>
               {cat.mitigations.map((m) => (
-                <div key={m} className="flex items-start gap-2">
+                <div key={m} className="flex items-start gap-2 text-xs text-white/70">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs text-white/40">{m}</span>
+                  <span>{m}</span>
                 </div>
               ))}
             </div>
@@ -106,22 +104,23 @@ export default function RiskPage() {
         ))}
       </div>
 
-      {/* Compliance Notes */}
+      {/* Compliance Advisory Notes */}
       {riskData?.compliance_notes && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="p-5 rounded-2xl border"
-          style={{ background: 'rgba(245,158,11,0.05)', borderColor: 'rgba(245,158,11,0.15)' }}
+          className="p-8 rounded-3xl border border-amber-500/20 bg-amber-500/5 space-y-4"
         >
-          <div className="flex items-center gap-2 mb-3">
-            <AlertTriangle className="w-4 h-4 text-amber-400" />
-            <h3 className="font-bold text-white text-sm">Compliance Notes</h3>
+          <div className="flex items-center gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-400" />
+            <h3 className="font-bold text-white text-base" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              Compliance & Regulatory Considerations
+            </h3>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 text-xs text-white/70 leading-relaxed">
             {riskData.compliance_notes.map((note: string) => (
-              <p key={note} className="text-xs text-white/50 leading-relaxed">• {note}</p>
+              <p key={note}>• {note}</p>
             ))}
           </div>
         </motion.div>

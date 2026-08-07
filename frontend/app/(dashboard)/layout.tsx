@@ -3,27 +3,23 @@
 /**
  * Dashboard Layout
  * 
- * Wraps all protected dashboard routes with:
- * - Sidebar navigation
- * - Top header bar
- * - Main content area
+ * Provides a clean, un-congested, fully responsive layout.
+ * Nimblize-style spacious layout structure with flex-based sidebar.
  */
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
-import { useAppStore } from '@/store/useAppStore';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed);
-
   return (
     <div className="flex h-screen bg-[var(--background)] overflow-hidden">
       <Sidebar />
-      <div
-        className="flex flex-col flex-1 overflow-hidden transition-all duration-300"
-        style={{ marginLeft: sidebarCollapsed ? '72px' : '260px' }}
-      >
+      <div className="flex flex-col flex-1 min-w-0 h-full overflow-hidden">
         <Header />
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-6 md:p-8">
+          <div className="max-w-7xl mx-auto w-full pb-8">
+            {children}
+          </div>
+        </main>
       </div>
     </div>
   );

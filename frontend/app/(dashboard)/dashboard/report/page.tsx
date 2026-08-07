@@ -1,13 +1,13 @@
 'use client';
 
 /**
- * Export Report Page
+ * Export Report Page (Nimblize Clean Aesthetic)
  * 
- * Allows users to preview and download their PDF executive report.
+ * Downloadable vector PDF advisory report preview and generator.
  */
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Download, Loader2, CheckCircle2, Zap } from 'lucide-react';
+import { FileText, Download, Loader2, CheckCircle2, Zap, Sparkles, ShieldCheck } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { reportAPI } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
@@ -30,106 +30,141 @@ export default function ReportPage() {
       });
       setSuccess(true);
     } catch (e) {
-      setError('PDF generation requires the backend server. Make sure it is running at localhost:8000.');
+      setError('PDF generation requires the backend API server. Ensure python run.py is running on localhost:8000.');
     } finally {
       setGenerating(false);
     }
   }
 
   const sections = [
-    { icon: '🏞️', title: 'Executive Summary', desc: 'High-level overview of automation opportunity and expected ROI' },
-    { icon: '📊', title: 'ROI Projections', desc: 'Detailed 24-month financial model with payback period analysis' },
-    { icon: '💡', title: 'Top Opportunities', desc: `${opportunities.length || 3} automation opportunities with scoring and tool recommendations` },
-    { icon: '🗺️', title: 'Implementation Roadmap', desc: 'Phase-by-phase action plan with timelines and ownership' },
-    { icon: '🛡️', title: 'Risk & Compliance', desc: 'Risk assessment and mitigation strategies' },
-    { icon: '🤖', title: 'AI Tool Recommendations', desc: 'Curated vendor list with pricing and integration guidance' },
+    { icon: '🏞️', title: 'Executive Summary', desc: 'High-level advisory findings, strategic automation scope & key ROI metrics' },
+    { icon: '📊', title: '24-Month ROI Projections', desc: 'Financial trajectory, payback period breakdown & net savings model' },
+    { icon: '💡', title: 'Automation Opportunities', desc: `${opportunities.length || 3} scored vectors with feasibility & impact rankings` },
+    { icon: '🗺️', title: 'Implementation Roadmap', desc: 'Phase-by-phase 24-week execution timeline with tool requirements' },
+    { icon: '🛡️', title: 'Risk & Governance Assessment', desc: 'Data privacy, model accuracy & change management controls' },
+    { icon: '🤖', title: 'Enterprise AI Tech Stack', desc: 'Vetted vendor list with pricing models & integration complexity' },
   ];
 
   return (
-    <div className="max-w-3xl space-y-6">
-      {/* Preview Card */}
+    <div className="max-w-4xl mx-auto space-y-8">
+      {/* Header Banner */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-8 rounded-2xl border relative overflow-hidden"
-        style={{ background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}
+        className="p-8 rounded-3xl border border-white/10 bg-white/[0.02] flex flex-col md:flex-row md:items-center justify-between gap-6"
       >
-        <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500/10 blur-3xl rounded-full" />
-        
-        {/* Report Header Preview */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center">
-            <Zap className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <p className="font-black text-xl text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>FlowPilot AI</p>
-            <p className="text-sm text-white/40">AI Automation Advisory Report</p>
-          </div>
+        <div>
+          <h1 className="text-2xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            Board-Ready Executive PDF Advisory Report
+          </h1>
+          <p className="text-sm text-white/50 mt-1">
+            Programmatically rendered vector PDF summarizing your AI automation strategy.
+          </p>
         </div>
 
-        <div className="mb-6 pb-6 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-          <p className="text-sm text-white/40 mb-1">Prepared for</p>
-          <p className="text-xl font-bold text-white">{company?.company_name || 'Your Company'}</p>
-          <p className="text-sm text-white/40">{company?.industry} · {company?.stage}</p>
-        </div>
-
-        {/* Summary Stats */}
-        {roiData?.summary && (
-          <div className="grid grid-cols-3 gap-4 mb-6">
-            {[
-              { label: 'Annual Savings', value: formatCurrency(roiData.summary.annual_cost_savings) },
-              { label: 'ROI', value: `${roiData.summary.roi_percentage}%` },
-              { label: 'Payback', value: `${roiData.summary.payback_months}mo` },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center p-3 rounded-xl" style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.15)' }}>
-                <p className="text-lg font-black text-indigo-300" style={{ fontFamily: 'Outfit, sans-serif' }}>{stat.value}</p>
-                <p className="text-xs text-white/40">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Report Sections */}
-        <div className="space-y-3">
-          <p className="text-xs font-medium text-white/30 uppercase tracking-wider">Report Sections</p>
-          {sections.map((section) => (
-            <div key={section.title} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)' }}>
-              <span className="text-xl">{section.icon}</span>
-              <div>
-                <p className="text-sm font-medium text-white/80">{section.title}</p>
-                <p className="text-xs text-white/30">{section.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Generate Button */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
-        {error && (
-          <div className="p-4 rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 text-sm mb-4">
-            {error}
-          </div>
-        )}
-        {success && (
-          <div className="p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 text-sm flex items-center gap-2 mb-4">
-            <CheckCircle2 className="w-4 h-4" /> Report downloaded successfully!
-          </div>
-        )}
         <button
           onClick={handleGenerate}
           disabled={generating}
-          className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-semibold text-base transition-all disabled:opacity-60 hover:opacity-90 text-white"
-          style={{ background: 'linear-gradient(135deg, #6366f1, #22d3ee)' }}
+          className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-cyan-400 text-white font-semibold text-sm hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 disabled:opacity-60 flex-shrink-0"
         >
           {generating ? (
-            <><Loader2 className="w-5 h-5 animate-spin" /> Generating PDF...</>
+            <><Loader2 className="w-4 h-4 animate-spin" /> Rendering PDF Document...</>
           ) : (
-            <><Download className="w-5 h-5" /> Download PDF Report</>
+            <><Download className="w-4 h-4" /> Download Vector PDF Report</>
           )}
         </button>
-        <p className="text-xs text-center text-white/20 mt-3">Requires backend running at localhost:8000</p>
       </motion.div>
+
+      {/* Report Document Preview Sheet */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="p-10 rounded-3xl border border-white/10 bg-white/[0.02] relative overflow-hidden space-y-8"
+      >
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-3xl rounded-full" />
+        
+        {/* Document Header */}
+        <div className="flex items-center justify-between pb-8 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center shadow-lg">
+              <Zap className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="font-black text-2xl text-white tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                FlowPilot AI
+              </h2>
+              <p className="text-xs font-semibold text-indigo-400 uppercase tracking-wider">AI Automation Strategy Report</p>
+            </div>
+          </div>
+
+          <div className="text-right">
+            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300">
+              Verified Analysis
+            </span>
+          </div>
+        </div>
+
+        {/* Company Target */}
+        <div className="p-6 rounded-2xl border border-white/5 bg-white/[0.02] space-y-1">
+          <p className="text-xs font-semibold text-white/40 uppercase tracking-wider">Prepared Exclusively For</p>
+          <p className="text-2xl font-bold text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            {company?.company_name || 'Your Startup Inc.'}
+          </p>
+          <p className="text-xs text-white/50">{company?.industry || 'Technology SaaS'} · Stage: {company?.stage || 'Growth'}</p>
+        </div>
+
+        {/* Key Metrics Grid */}
+        {roiData?.summary && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-5 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 text-center">
+              <p className="text-xs text-white/40 mb-1">Identified Annual Savings</p>
+              <p className="text-xl font-black text-emerald-300" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                {formatCurrency(roiData.summary.annual_cost_savings)}
+              </p>
+            </div>
+            <div className="p-5 rounded-2xl border border-indigo-500/20 bg-indigo-500/5 text-center">
+              <p className="text-xs text-white/40 mb-1">Target ROI Percentage</p>
+              <p className="text-xl font-black text-indigo-300" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                {roiData.summary.roi_percentage}%
+              </p>
+            </div>
+            <div className="p-5 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 text-center">
+              <p className="text-xs text-white/40 mb-1">Investment Payback Period</p>
+              <p className="text-xl font-black text-cyan-300" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                {roiData.summary.payback_months} Months
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Included Report Sections List */}
+        <div className="space-y-4 pt-2">
+          <p className="text-xs font-semibold uppercase tracking-wider text-white/40">Included Advisory Chapters</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {sections.map((section) => (
+              <div key={section.title} className="p-4 rounded-2xl border border-white/5 bg-white/[0.02] flex items-start gap-3.5">
+                <span className="text-2xl flex-shrink-0">{section.icon}</span>
+                <div>
+                  <h4 className="font-bold text-white text-sm">{section.title}</h4>
+                  <p className="text-xs text-white/40 leading-relaxed mt-0.5">{section.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Action Notification */}
+      {error && (
+        <div className="p-4 rounded-2xl border border-rose-500/20 bg-rose-500/10 text-rose-300 text-xs text-center">
+          {error}
+        </div>
+      )}
+      {success && (
+        <div className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 text-xs text-center flex items-center justify-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Vector PDF Advisory Report generated & saved to your downloads.
+        </div>
+      )}
     </div>
   );
 }

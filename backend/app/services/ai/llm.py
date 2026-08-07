@@ -6,7 +6,7 @@ without changing any route code. Just update the config.
 import json
 import os
 from typing import Optional
-from ..config import Config
+from app.config import Config
 
 
 class LLMService:
