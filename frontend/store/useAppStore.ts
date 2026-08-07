@@ -51,7 +51,18 @@ export interface Opportunity {
   risk_level: string;
 }
 
+export interface UserSession {
+  name: string;
+  email: string;
+  companyName: string;
+  role: string;
+}
+
 interface AppState {
+  // User Session
+  user: UserSession | null;
+  setUser: (user: UserSession) => void;
+
   // Theme
   theme: 'dark' | 'light';
   toggleTheme: () => void;
@@ -93,8 +104,9 @@ interface AppState {
   onboardingComplete: boolean;
   setOnboardingComplete: (complete: boolean) => void;
 
-  // Reset
+  // Reset & Restart Demo
   reset: () => void;
+  restartDemo: () => void;
 }
 
 const DEFAULT_COMPANY: CompanyProfile = {
@@ -108,6 +120,15 @@ const DEFAULT_COMPANY: CompanyProfile = {
 export const useAppStore = create<AppState>()(
   persist(
     (set) => ({
+      // User Session
+      user: {
+        name: 'Anshul Sinha',
+        email: 'anshul@flowpilot.ai',
+        companyName: 'FlowPilot AI',
+        role: 'Startup Founder',
+      },
+      setUser: (user) => set({ user }),
+
       // Theme
       theme: 'dark',
       toggleTheme: () => set((s) => ({ theme: s.theme === 'dark' ? 'light' : 'dark' })),
@@ -153,7 +174,22 @@ export const useAppStore = create<AppState>()(
       // Reset all state (preserves theme)
       reset: () =>
         set({
-          company: null,
+          company: DEFAULT_COMPANY,
+          sessionId: null,
+          companyContext: null,
+          interviewHistory: [],
+          interviewComplete: false,
+          processes: [],
+          opportunities: [],
+          roiData: null,
+          roadmapData: null,
+          onboardingComplete: false,
+        }),
+
+      // Completely restart demo for new user analysis
+      restartDemo: () =>
+        set({
+          company: DEFAULT_COMPANY,
           sessionId: null,
           companyContext: null,
           interviewHistory: [],
@@ -170,6 +206,7 @@ export const useAppStore = create<AppState>()(
       storage: createJSONStorage(() => localStorage),
       // Only persist user-generated data and theme — omit transient UI state
       partialize: (state) => ({
+        user: state.user,
         theme: state.theme,
         company: state.company,
         interviewHistory: state.interviewHistory,
