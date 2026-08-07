@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
+import { SplashScreen } from '@/components/ui/SplashScreen';
 
 export const metadata: Metadata = {
   title: 'FlowPilot AI – AI Workflow Automation Advisor',
@@ -26,7 +27,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
       </head>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <SplashScreen>{children}</SplashScreen>
+        </ThemeProvider>
       </body>
     </html>
   );
