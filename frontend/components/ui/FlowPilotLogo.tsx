@@ -12,7 +12,8 @@
 import { motion } from 'framer-motion';
 
 interface LogoProps {
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'hero';
+  layout?: 'horizontal' | 'stacked';
   showText?: boolean;
   showTagline?: boolean;
   className?: string;
@@ -20,6 +21,7 @@ interface LogoProps {
 
 export function FlowPilotLogo({
   size = 'md',
+  layout = 'horizontal',
   showText = true,
   showTagline = false,
   className = '',
@@ -29,6 +31,7 @@ export function FlowPilotLogo({
     md: 'w-9 h-9',
     lg: 'w-12 h-12',
     xl: 'w-20 h-20',
+    hero: 'w-36 h-36 md:w-44 md:h-44',
   };
 
   const textSizes = {
@@ -36,10 +39,13 @@ export function FlowPilotLogo({
     md: 'text-xl',
     lg: 'text-2xl',
     xl: 'text-4xl',
+    hero: 'text-4xl md:text-5xl',
   };
 
+  const isStacked = layout === 'stacked';
+
   return (
-    <div className={`flex items-center gap-3 select-none ${className}`}>
+    <div className={`flex ${isStacked ? 'flex-col items-center text-center gap-4' : 'items-center gap-3'} select-none ${className}`}>
       {/* Animated Logo Mark */}
       <div className={`relative ${iconSizes[size]} flex-shrink-0 flex items-center justify-center`}>
         <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
@@ -59,7 +65,7 @@ export function FlowPilotLogo({
 
             {/* Glow Filter */}
             <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feGaussianBlur stdDeviation="3.5" result="blur" />
               <feComposite in="SourceGraphic" in2="blur" operator="over" />
             </filter>
           </defs>
@@ -68,7 +74,7 @@ export function FlowPilotLogo({
           <motion.path
             d="M 45 15 A 35 35 0 1 0 50 85"
             stroke="url(#arcGrad)"
-            strokeWidth="3.5"
+            strokeWidth="4"
             strokeLinecap="round"
             initial={{ pathLength: 0.8, opacity: 0.8 }}
             animate={{ pathLength: 1, opacity: 1 }}
@@ -76,52 +82,52 @@ export function FlowPilotLogo({
           />
 
           {/* Circuit Trace Nodes */}
-          <g stroke="#06b6d4" strokeWidth="2.5" opacity="0.9">
-            <line x1="8" y1="36" x2="28" y2="36" />
-            <circle cx="28" cy="36" r="3" fill="#06b6d4" />
+          <g stroke="#06b6d4" strokeWidth="2.8" opacity="0.95">
+            <line x1="6" y1="36" x2="28" y2="36" />
+            <circle cx="28" cy="36" r="3.5" fill="#06b6d4" />
 
-            <line x1="4" y1="48" x2="22" y2="48" />
-            <circle cx="22" cy="48" r="3" fill="#38bdf8" />
+            <line x1="2" y1="48" x2="22" y2="48" />
+            <circle cx="22" cy="48" r="3.5" fill="#38bdf8" />
 
-            <line x1="12" y1="60" x2="30" y2="60" />
-            <circle cx="30" cy="60" r="3" fill="#06b6d4" />
+            <line x1="10" y1="60" x2="30" y2="60" />
+            <circle cx="30" cy="60" r="3.5" fill="#06b6d4" />
           </g>
 
           {/* AI Sparkle Stars (Top Right) */}
           <motion.g
-            animate={{ scale: [0.9, 1.15, 0.9], opacity: [0.7, 1, 0.7] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+            animate={{ scale: [0.9, 1.2, 0.9], opacity: [0.75, 1, 0.75] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
             fill="#c084fc"
           >
             {/* Sparkle 1 */}
-            <path d="M 76 22 Q 76 27 81 27 Q 76 27 76 32 Q 76 27 71 27 Q 76 27 76 22 Z" />
+            <path d="M 76 20 Q 76 26 82 26 Q 76 26 76 32 Q 76 26 70 26 Q 76 26 76 20 Z" />
             {/* Sparkle 2 */}
-            <path d="M 88 34 Q 88 38 92 38 Q 88 38 88 42 Q 88 38 84 38 Q 88 38 88 34 Z" />
+            <path d="M 88 33 Q 88 37 92 37 Q 88 37 88 41 Q 88 37 84 37 Q 88 37 88 33 Z" />
             {/* Sparkle 3 */}
-            <path d="M 68 40 Q 68 42 70 42 Q 68 42 68 44 Q 68 42 66 42 Q 68 42 68 40 Z" />
+            <path d="M 68 39 Q 68 41 70 41 Q 68 41 68 43 Q 68 41 66 41 Q 68 41 68 39 Z" />
           </motion.g>
 
           {/* Main Lightning Bolt */}
           <motion.path
-            d="M 58 12 L 34 50 L 52 50 L 42 88 L 72 44 L 54 44 Z"
+            d="M 58 10 L 32 50 L 52 50 L 40 90 L 74 44 L 54 44 Z"
             fill="url(#boltGrad)"
             filter="url(#neonGlow)"
             initial={{ scale: 0.98 }}
-            animate={{ scale: [0.98, 1.03, 0.98] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            animate={{ scale: [0.98, 1.04, 0.98] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
           />
         </svg>
       </div>
 
       {/* Text Branding */}
       {showText && (
-        <div className="flex flex-col">
-          <div className={`font-black tracking-tight text-white flex items-center gap-1 ${textSizes[size]}`} style={{ fontFamily: 'Outfit, sans-serif' }}>
+        <div className={`flex flex-col ${isStacked ? 'items-center text-center' : ''}`}>
+          <div className={`font-black tracking-tight text-white flex items-center justify-center gap-1.5 ${textSizes[size]}`} style={{ fontFamily: 'Outfit, sans-serif' }}>
             <span>FlowPilot</span>
             <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-300 bg-clip-text text-transparent">AI</span>
           </div>
           {showTagline && (
-            <span className="text-[9px] font-bold tracking-[0.2em] text-cyan-400 uppercase mt-0.5">
+            <span className={`font-bold tracking-[0.25em] text-cyan-400 uppercase mt-1 ${size === 'hero' ? 'text-xs md:text-sm' : 'text-[9px]'}`}>
               AUTOMATE SMARTER. GROW FASTER.
             </span>
           )}

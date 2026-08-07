@@ -67,19 +67,16 @@ const STEPS = [
   { num: '04', title: 'Execute the Roadmap', desc: 'Follow a prioritized, phase-by-phase implementation plan tailored to your team.' },
 ];
 
+import { FlowPilotLogo } from '@/components/ui/FlowPilotLogo';
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#050508] text-white overflow-x-hidden">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 border-b border-white/5 backdrop-blur-xl bg-black/20">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center">
-            <Zap className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-bold text-lg tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            FlowPilot <span className="text-indigo-400">AI</span>
-          </span>
-        </div>
+        <Link href="/">
+          <FlowPilotLogo size="sm" showText={true} />
+        </Link>
         <div className="hidden md:flex items-center gap-8 text-sm text-white/60">
           <a href="#features" className="hover:text-white transition-colors">Features</a>
           <a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a>
@@ -291,13 +288,8 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 border-t border-white/5 text-center text-white/30 text-sm">
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <div className="w-5 h-5 rounded bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center">
-            <Zap className="w-3 h-3 text-white" />
-          </div>
-          <span className="font-semibold text-white/50">FlowPilot AI</span>
-        </div>
+      <footer className="py-8 px-4 border-t border-white/5 flex flex-col items-center gap-2 text-center text-white/30 text-sm">
+        <FlowPilotLogo size="sm" showText={true} />
         <p>© 2025 FlowPilot AI. Built for the builders.</p>
       </footer>
     </div>
