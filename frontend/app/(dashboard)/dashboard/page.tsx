@@ -5,13 +5,13 @@
  * Exact match to reference screenshot design.
  */
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import {
   TrendingUp, Clock, DollarSign, ArrowRight, Play,
   ChevronRight, Target, Sparkles, Zap, Shield, GitBranch,
   BarChart2, MessageSquare, Map, ShoppingBag, FileText,
-  Users, CheckCircle2, Search, ArrowUpRight, Rocket
+  Users, CheckCircle2, Search, ArrowUpRight, Rocket, X
 } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
@@ -24,6 +24,7 @@ export default function DashboardPage() {
   const { opportunities, roiData, setOpportunities, setRoiData } = useAppStore();
   const [localOpps, setLocalOpps] = useState(opportunities);
   const [localRoi, setLocalRoi] = useState(roiData);
+  const [showDemoModal, setShowDemoModal] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -175,7 +176,8 @@ export default function DashboardPage() {
                 Continue Analysis <ArrowRight className="w-4 h-4" />
               </Link>
               <button
-                className="px-6 py-3 rounded-xl bg-white/[0.06] border border-white/15 text-white font-semibold text-sm hover:bg-white/10 transition-all flex items-center gap-2"
+                onClick={() => setShowDemoModal(true)}
+                className="px-6 py-3 rounded-xl bg-white/[0.06] border border-white/15 text-white font-semibold text-sm hover:bg-white/10 transition-all flex items-center gap-2 cursor-pointer"
               >
                 <Play className="w-4 h-4 text-cyan-400 fill-cyan-400" /> Watch Demo
               </button>
@@ -400,6 +402,92 @@ export default function DashboardPage() {
           </div>
         </div>
       </footer>
+
+      {/* Demo Video Walkthrough Modal */}
+      <AnimatePresence>
+        {showDemoModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            onClick={() => setShowDemoModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-3xl rounded-3xl bg-[#0e1122] border border-white/15 p-6 md:p-8 space-y-6 shadow-2xl relative"
+            >
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-400 to-indigo-500 flex items-center justify-center">
+                    <Play className="w-4 h-4 text-white fill-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-white text-lg" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                      FlowPilot AI Platform Walkthrough Demo
+                    </h3>
+                    <p className="text-xs text-slate-400">Interactive overview of business process discovery & ROI analytics</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowDemoModal(false)}
+                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Demo Interactive Preview Window */}
+              <div className="aspect-video w-full rounded-2xl bg-[#060813] border border-indigo-500/20 p-6 flex flex-col justify-between relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl" />
+                
+                <div className="flex items-center justify-between z-10">
+                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> DEMO SIMULATION ACTIVE
+                  </span>
+                  <span className="text-xs font-mono text-slate-400">01:45 / 03:00</span>
+                </div>
+
+                <div className="space-y-3 z-10 my-auto py-4">
+                  <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-300 font-bold text-sm">
+                      01
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-white">AI Founder Interview</p>
+                      <p className="text-xs text-slate-400">Extracting operational bottlenecks across Sales, Support & Operations</p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-300 font-bold text-sm">
+                      02
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-white">Digital Twin Workflow Graph</p>
+                      <p className="text-xs text-slate-400">Simulating 98% execution speedup with autonomous AI agent layers</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between z-10 pt-2 border-t border-white/5">
+                  <p className="text-xs text-indigo-300 font-medium">✨ Total Annual Savings Forecast: $294,060/yr</p>
+                  <Link
+                    href="/dashboard/interview"
+                    onClick={() => setShowDemoModal(false)}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-400 text-white font-semibold text-xs flex items-center gap-1.5 hover:opacity-90 transition-opacity"
+                  >
+                    Start Your Live Analysis <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
