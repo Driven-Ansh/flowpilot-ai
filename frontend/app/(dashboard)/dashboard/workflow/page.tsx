@@ -2,9 +2,7 @@
 
 /**
  * Workflow Graph Page (Digital Twin Simulation)
- * 
- * Interactive React Flow graph displaying Before vs After AI state.
- * Nimblize-style clean, spacious layout.
+ * Interactive React Flow graph displaying Before vs After AI state with FeatureInfoTooltip.
  */
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -15,6 +13,14 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { Cpu, User, ArrowLeftRight, CheckCircle2, AlertTriangle, Sparkles } from 'lucide-react';
+import { FeatureInfoTooltip } from '@/components/ui/FeatureInfoTooltip';
+
+const WORKFLOW_TOOLTIP = {
+  title: 'Digital Twin Workflow Engine',
+  techStack: ['React Flow (@xyflow/react)', 'Framer Motion', 'Canvas SVG', 'TypeScript 5'],
+  implementation: 'Renders custom node trees and dynamic SVG edge paths. Toggling between states swaps static manual node configurations with animated streaming cyan edges.',
+  howItWorks: 'Simulates how replacing manual human handoffs with AI webhooks and automated LLM models reduces execution latency from hours to seconds.',
+};
 
 const BEFORE_NODES: Node[] = [
   { id: 'start', type: 'input', position: { x: 0, y: 150 }, data: { label: '🔵 Process Start' }, style: { background: '#1e1b4b', border: '1px solid #6366f1', borderRadius: 12, color: '#a5b4fc', fontWeight: 600, fontSize: 12, padding: 12 } },
@@ -74,15 +80,18 @@ export default function WorkflowPage() {
   }, [mode]);
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="space-y-8 max-w-7xl mx-auto pb-12">
       {/* Header & Simulation Control */}
-      <div className="p-8 rounded-3xl border border-white/10 bg-white/[0.02] space-y-6">
+      <div className="p-8 rounded-3xl border border-white/10 bg-[#0e1122] space-y-6 shadow-lg">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div>
-            <h1 className="text-2xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
-              Digital Twin Workflow Graph
-            </h1>
-            <p className="text-sm text-white/50 mt-1">
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                Digital Twin Workflow Graph
+              </h1>
+              <FeatureInfoTooltip info={WORKFLOW_TOOLTIP} />
+            </div>
+            <p className="text-sm text-slate-400">
               Visualizing the operational transformation from manual processing to an automated AI pipeline.
             </p>
           </div>
@@ -90,20 +99,20 @@ export default function WorkflowPage() {
           <div className="flex items-center gap-2 p-1.5 rounded-2xl border border-white/10 bg-white/5 flex-shrink-0">
             <button
               onClick={() => setMode('before')}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
                 mode === 'before'
                   ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30 shadow-lg'
-                  : 'text-white/40 hover:text-white/70'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
               <User className="w-3.5 h-3.5" /> Manual State (Before AI)
             </button>
             <button
               onClick={() => setMode('after')}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
                 mode === 'after'
                   ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 shadow-lg'
-                  : 'text-white/40 hover:text-white/70'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
               <Cpu className="w-3.5 h-3.5" /> Automated State (After AI)
@@ -112,7 +121,7 @@ export default function WorkflowPage() {
         </div>
 
         {/* Legend */}
-        <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-white/5 text-xs text-white/50">
+        <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-white/10 text-xs text-slate-400">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded bg-indigo-500/20 border border-indigo-500" /> Start Node
           </div>
@@ -161,11 +170,11 @@ export default function WorkflowPage() {
           { label: 'Data Error Rate', before: '~12% manual error', after: '< 0.1% validated', gain: '99% error reduction' },
           { label: 'Lead Response Velocity', before: '3–6 hours latency', after: 'Instant (< 30 sec)', gain: '10x conversion velocity' },
         ].map((stat) => (
-          <div key={stat.label} className="p-6 rounded-2xl border border-white/10 bg-white/[0.02] space-y-3">
-            <p className="text-xs font-medium text-white/40 uppercase tracking-wider">{stat.label}</p>
+          <div key={stat.label} className="p-6 rounded-2xl border border-white/10 bg-[#0e1122] space-y-3 shadow-lg">
+            <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">{stat.label}</p>
             <div className="flex items-center gap-3">
               <span className="text-sm text-rose-400/70 line-through">{stat.before}</span>
-              <ArrowLeftRight className="w-4 h-4 text-white/20" />
+              <ArrowLeftRight className="w-4 h-4 text-slate-500" />
               <span className="text-base font-bold text-cyan-300">{stat.after}</span>
             </div>
             <p className="text-xs font-semibold text-emerald-400 flex items-center gap-1">

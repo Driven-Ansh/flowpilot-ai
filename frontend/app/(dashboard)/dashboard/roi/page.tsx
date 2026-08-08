@@ -1,9 +1,7 @@
 'use client';
 
 /**
- * ROI Calculator Page (Nimblize Clean Aesthetic)
- * 
- * Interactive financial modeling page with adjustable hourly rate and budget sliders.
+ * ROI Calculator Page (Feasible INR Standards & Real-time Dynamic Recalculation)
  */
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -11,54 +9,69 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell
 } from 'recharts';
-import { DollarSign, TrendingUp, Clock, Target } from 'lucide-react';
+import { IndianRupee, TrendingUp, Clock, Target, RotateCcw } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
-import { roiAPI } from '@/lib/api';
-import { formatCurrency } from '@/lib/utils';
+import { roiAPI, calculateDynamicROI } from '@/lib/api';
+import { formatCurrency, formatCompactINR } from '@/lib/utils';
+import { FeatureInfoTooltip } from '@/components/ui/FeatureInfoTooltip';
+
+const ROI_TOOLTIP = {
+  title: 'Financial ROI Modeling Engine',
+  techStack: ['Next.js 16', 'Recharts SVG', 'Zustand Dynamic Store', 'TypeScript 5'],
+  implementation: 'Calculates dynamic cash flow projections via labor rate recovery (Hours/wk * 52 * Rate/hr) + direct operational cost reductions net of capex setup budget.',
+  howItWorks: 'Adjusting hourly rate or setup budget sliders instantly triggers state recalculations, re-rendering 24-month cumulative area graphs and value breakdown pie charts in real time.',
+};
 
 export default function RoiPage() {
-  const { roiData, setRoiData } = useAppStore();
-  const [hourlyRate, setHourlyRate] = useState(75);
-  const [implementationCost, setImplementationCost] = useState(25000);
-  const [localRoi, setLocalRoi] = useState(roiData);
+  const { roiData, setRoiData, opportunities } = useAppStore();
+  const [hourlyRate, setHourlyRate] = useState(650); // ₹650/hr default
+  const [implementationCost, setImplementationCost] = useState(150000); // ₹1,50,000 default
+  const [localRoi, setLocalRoi] = useState<any>(null);
 
+  // Recalculate ROI dynamically on slider or opportunity changes
   useEffect(() => {
-    if (!roiData) {
-      roiAPI.getMock()
-        .then((d) => { setLocalRoi(d); setRoiData(d); })
-        .catch(console.error);
-    } else {
-      setLocalRoi(roiData);
-    }
-  }, []);
+    const updatedRoi = calculateDynamicROI(hourlyRate, implementationCost, opportunities);
+    setLocalRoi(updatedRoi);
+    setRoiData(updatedRoi);
+  }, [hourlyRate, implementationCost, opportunities]);
 
   const summary = localRoi?.summary;
   const monthlyData = localRoi?.monthly_projections || [];
   const breakdownData = localRoi?.breakdown || [];
 
   const kpis = summary ? [
-    { label: 'Annual Cost Savings', value: formatCurrency(summary.annual_cost_savings), icon: DollarSign, color: 'from-emerald-500 to-cyan-500', sub: 'Total direct & indirect benefit' },
+    { label: 'Annual Cost Savings', value: formatCurrency(summary.annual_cost_savings), icon: IndianRupee, color: 'from-emerald-500 to-cyan-500', sub: 'Total direct & labor benefit' },
     { label: 'Expected ROI', value: `${summary.roi_percentage}%`, icon: TrendingUp, color: 'from-indigo-500 to-purple-500', sub: `${summary.payback_months} mo payback period` },
     { label: 'Weekly Hours Recovered', value: `${summary.total_hours_saved_per_week} hrs/wk`, icon: Clock, color: 'from-amber-500 to-orange-500', sub: `${summary.annual_hours_saved} annual hours` },
     { label: '3-Year Net Value', value: formatCurrency(summary.three_year_value), icon: Target, color: 'from-pink-500 to-rose-500', sub: 'Net of setup & license costs' },
   ] : [];
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="space-y-8 max-w-7xl mx-auto pb-12">
       {/* Header Banner */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-8 rounded-3xl border border-white/10 bg-white/[0.02] flex flex-col md:flex-row md:items-center justify-between gap-6"
+        className="p-8 rounded-3xl border border-white/10 bg-white/[0.02] flex flex-col md:flex-row md:items-center justify-between gap-6 relative"
       >
-        <div>
-          <h1 className="text-2xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            Interactive ROI Calculator & Financial Modeling
-          </h1>
-          <p className="text-sm text-white/50 mt-1">
-            Simulate financial return, payback thresholds, and 24-month cumulative net savings.
+        <div className="space-y-1">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              Interactive ROI Calculator & Financial Modeling
+            </h1>
+            <FeatureInfoTooltip info={ROI_TOOLTIP} />
+          </div>
+          <p className="text-sm text-slate-400">
+            Real-time financial modeling scaled for Indian startups (INR - ₹).
           </p>
         </div>
+
+        <button
+          onClick={() => { setHourlyRate(650); setImplementationCost(150000); }}
+          className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5 self-start md:self-auto cursor-pointer"
+        >
+          <RotateCcw className="w-3.5 h-3.5" /> Reset Defaults
+        </button>
       </motion.div>
 
       {/* KPI Cards Grid */}
@@ -68,15 +81,15 @@ export default function RoiPage() {
             key={kpi.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="p-6 rounded-2xl border border-white/10 bg-white/[0.02] space-y-3"
+            transition={{ delay: i * 0.08 }}
+            className="p-6 rounded-2xl border border-white/10 bg-[#0e1122] space-y-3 shadow-lg"
           >
-            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${kpi.color} flex items-center justify-center`}>
-              <kpi.icon className="w-5 h-5 text-white" />
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${kpi.color} flex items-center justify-center text-white shadow-md`}>
+              <kpi.icon className="w-5 h-5" />
             </div>
-            <p className="text-xs font-medium text-white/40 uppercase tracking-wider">{kpi.label}</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{kpi.label}</p>
             <p className="text-2xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>{kpi.value}</p>
-            <p className="text-xs text-white/40">{kpi.sub}</p>
+            <p className="text-xs text-slate-400">{kpi.sub}</p>
           </motion.div>
         ))}
       </div>
@@ -85,42 +98,65 @@ export default function RoiPage() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-        className="p-8 rounded-3xl border border-white/10 bg-white/[0.02] space-y-6"
+        transition={{ delay: 0.3 }}
+        className="p-8 rounded-3xl border border-white/10 bg-[#0e1122] space-y-6 shadow-lg"
       >
-        <h3 className="font-bold text-lg text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
-          Financial Parameters & Assumptions
-        </h3>
+        <div className="flex items-center justify-between">
+          <h3 className="font-bold text-lg text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            Financial Parameters & Assumptions
+          </h3>
+          <span className="text-xs text-cyan-400 font-semibold bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">
+            Real-time Recalculation Active
+          </span>
+        </div>
+
         <div className="grid md:grid-cols-2 gap-8">
-          <div className="space-y-2">
+          {/* Hourly Rate Slider */}
+          <div className="space-y-3">
             <div className="flex justify-between items-center text-sm">
-              <span className="text-white/60 font-medium">Average Team Hourly Rate</span>
-              <span className="text-white font-bold bg-white/5 px-3 py-1 rounded-lg border border-white/10">${hourlyRate}/hr</span>
+              <span className="text-slate-300 font-medium">Average Team Hourly Rate (INR)</span>
+              <span className="text-cyan-300 font-bold bg-white/5 px-3 py-1 rounded-xl border border-white/10">
+                ₹{hourlyRate}/hr
+              </span>
             </div>
             <input
               type="range"
-              min="30"
-              max="200"
+              min="300"
+              max="2500"
+              step="50"
               value={hourlyRate}
               onChange={(e) => setHourlyRate(Number(e.target.value))}
-              className="w-full accent-indigo-500 cursor-pointer"
+              className="w-full accent-cyan-400 cursor-pointer"
             />
+            <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+              <span>₹300/hr (Junior)</span>
+              <span>₹1,200/hr (Senior)</span>
+              <span>₹2,500/hr (Exec)</span>
+            </div>
           </div>
 
-          <div className="space-y-2">
+          {/* Setup Budget Slider */}
+          <div className="space-y-3">
             <div className="flex justify-between items-center text-sm">
-              <span className="text-white/60 font-medium">Estimated Setup & Integration Budget</span>
-              <span className="text-white font-bold bg-white/5 px-3 py-1 rounded-lg border border-white/10">{formatCurrency(implementationCost)}</span>
+              <span className="text-slate-300 font-medium">Estimated Setup & Integration Budget (INR)</span>
+              <span className="text-indigo-300 font-bold bg-white/5 px-3 py-1 rounded-xl border border-white/10">
+                {formatCurrency(implementationCost)}
+              </span>
             </div>
             <input
               type="range"
-              min="5000"
-              max="100000"
-              step="5000"
+              min="50000"
+              max="2000000"
+              step="25000"
               value={implementationCost}
               onChange={(e) => setImplementationCost(Number(e.target.value))}
               className="w-full accent-indigo-500 cursor-pointer"
             />
+            <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+              <span>₹50K (Basic)</span>
+              <span>₹5 Lakhs (Medium)</span>
+              <span>₹20 Lakhs (Enterprise)</span>
+            </div>
           </div>
         </div>
       </motion.div>
@@ -131,32 +167,33 @@ export default function RoiPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="lg:col-span-2 p-8 rounded-3xl border border-white/10 bg-white/[0.02] space-y-6"
+          transition={{ delay: 0.4 }}
+          className="lg:col-span-2 p-8 rounded-3xl border border-white/10 bg-[#0e1122] space-y-6 shadow-lg"
         >
           <div>
             <h3 className="font-bold text-lg text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
-              24-Month Cumulative Savings Trajectory
+              24-Month Cumulative Savings Trajectory (INR)
             </h3>
-            <p className="text-xs text-white/40">Net financial benefit over time following initial implementation payback</p>
+            <p className="text-xs text-slate-400">Net financial benefit over time following initial setup payback</p>
           </div>
+
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={monthlyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart data={monthlyData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                 <defs>
-                  <linearGradient id="roiFullGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.35} />
+                  <linearGradient id="roiFullGradINR" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
                     <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                <XAxis dataKey="month" tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 11 }} axisLine={false} tickLine={false} interval={2} />
-                <YAxis tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}K`} />
+                <XAxis dataKey="month" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} interval={2} />
+                <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => formatCompactINR(v)} />
                 <Tooltip
-                  contentStyle={{ background: '#0e0e17', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 12 }}
-                  formatter={(v: any) => [formatCurrency(v), 'Cumulative Net Benefit']}
+                  contentStyle={{ background: '#0a0c1a', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 12 }}
+                  formatter={(v: any) => [formatCurrency(v), 'Cumulative Net Savings']}
                 />
-                <Area type="monotone" dataKey="cumulative_savings" stroke="#6366f1" strokeWidth={3} fill="url(#roiFullGrad)" />
+                <Area type="monotone" dataKey="cumulative_savings" stroke="#3b82f6" strokeWidth={3} fill="url(#roiFullGradINR)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -166,14 +203,14 @@ export default function RoiPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="p-8 rounded-3xl border border-white/10 bg-white/[0.02] space-y-6"
+          transition={{ delay: 0.5 }}
+          className="p-8 rounded-3xl border border-white/10 bg-[#0e1122] space-y-6 shadow-lg"
         >
           <div>
             <h3 className="font-bold text-lg text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
               Value Source Breakdown
             </h3>
-            <p className="text-xs text-white/40">Labor hours vs direct software savings</p>
+            <p className="text-xs text-slate-400">Labor hours recovered vs operational efficiency</p>
           </div>
 
           {breakdownData.length > 0 && (
@@ -187,7 +224,7 @@ export default function RoiPage() {
                       ))}
                     </Pie>
                     <Tooltip
-                      contentStyle={{ background: '#0e0e17', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 12 }}
+                      contentStyle={{ background: '#0a0c1a', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 12 }}
                       formatter={(v: any) => [formatCurrency(v)]}
                     />
                   </PieChart>
@@ -196,10 +233,10 @@ export default function RoiPage() {
 
               <div className="space-y-3 pt-2">
                 {breakdownData.map((item: any) => (
-                  <div key={item.category} className="flex items-center justify-between p-3 rounded-xl border border-white/5 bg-white/[0.02]">
+                  <div key={item.category} className="flex items-center justify-between p-3 rounded-xl border border-white/10 bg-white/[0.03]">
                     <div className="flex items-center gap-2.5">
                       <div className="w-3 h-3 rounded-full" style={{ background: item.color }} />
-                      <span className="text-xs text-white/70 font-medium">{item.category}</span>
+                      <span className="text-xs text-slate-300 font-medium">{item.category}</span>
                     </div>
                     <span className="text-xs font-bold text-white">{formatCurrency(item.value)}</span>
                   </div>

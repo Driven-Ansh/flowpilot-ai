@@ -2,16 +2,25 @@
 
 /**
  * Risk & Compliance Analysis Page (Nimblize Clean Aesthetic)
+ * Displays governance scoring, risk mitigations, and compliance considerations with FeatureInfoTooltip.
  */
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ShieldAlert, CheckCircle2, AlertTriangle, ShieldCheck } from 'lucide-react';
 import { riskAPI } from '@/lib/api';
 import type { RiskCategory } from '@/types';
+import { FeatureInfoTooltip } from '@/components/ui/FeatureInfoTooltip';
+
+const RISK_TOOLTIP = {
+  title: 'Risk & Governance Analyzer',
+  techStack: ['TypeScript 5', 'Quart Async', 'DPDP Compliance Matrix', 'TailwindCSS v3'],
+  implementation: 'Scenarios data privacy vector hazards, model hallucinations, and vendor lock-in risks against enterprise governance standards.',
+  howItWorks: 'Assigns risk scores (0-100) across data privacy, model accuracy, and change management, detailing actionable mitigation controls.',
+};
 
 function RiskBar({ score, color }: { score: number; color: string }) {
   return (
-    <div className="w-full h-2.5 rounded-full overflow-hidden bg-white/5">
+    <div className="w-full h-2.5 rounded-full overflow-hidden bg-white/10">
       <motion.div
         className="h-full rounded-full"
         style={{ background: color }}
@@ -35,18 +44,21 @@ export default function RiskPage() {
   const categories: RiskCategory[] = riskData?.categories || [];
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="space-y-8 max-w-7xl mx-auto pb-12">
       {/* Header Banner */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-8 rounded-3xl border border-white/10 bg-white/[0.02] flex flex-col md:flex-row md:items-center justify-between gap-6"
+        className="p-8 rounded-3xl border border-white/10 bg-[#0e1122] flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-lg"
       >
-        <div>
-          <h1 className="text-2xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            Risk & Compliance Governance Analysis
-          </h1>
-          <p className="text-sm text-white/50 mt-1">
+        <div className="space-y-1">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              Risk & Compliance Governance Analysis
+            </h1>
+            <FeatureInfoTooltip info={RISK_TOOLTIP} />
+          </div>
+          <p className="text-sm text-slate-400">
             Evaluating data privacy, model accuracy, security, and organizational change readiness.
           </p>
         </div>
@@ -55,7 +67,7 @@ export default function RiskPage() {
           <div className="flex items-center gap-4 p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-300">
             <ShieldCheck className="w-8 h-8 flex-shrink-0" />
             <div>
-              <p className="text-xs text-white/40">Overall Assessment</p>
+              <p className="text-xs text-slate-400">Overall Assessment</p>
               <p className="text-lg font-black">{riskData.overall_risk_level} Risk ({riskData.risk_score}/100)</p>
             </div>
           </div>
@@ -70,7 +82,7 @@ export default function RiskPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="p-6 rounded-2xl border border-white/10 bg-white/[0.02] space-y-4"
+            className="p-6 rounded-2xl border border-white/10 bg-[#0e1122] space-y-4 shadow-lg"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -89,12 +101,12 @@ export default function RiskPage() {
 
             <RiskBar score={cat.score} color={cat.color} />
 
-            <p className="text-xs text-white/60 leading-relaxed">{cat.description}</p>
+            <p className="text-xs text-slate-300 leading-relaxed">{cat.description}</p>
 
-            <div className="space-y-2 pt-2 border-t border-white/5">
-              <p className="text-xs font-semibold text-white/40 uppercase tracking-wider">Mitigation Controls</p>
+            <div className="space-y-2 pt-2 border-t border-white/10">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Mitigation Controls</p>
               {cat.mitigations.map((m) => (
-                <div key={m} className="flex items-start gap-2 text-xs text-white/70">
+                <div key={m} className="flex items-start gap-2 text-xs text-slate-300">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 mt-0.5" />
                   <span>{m}</span>
                 </div>
@@ -118,7 +130,7 @@ export default function RiskPage() {
               Compliance & Regulatory Considerations
             </h3>
           </div>
-          <div className="space-y-2 text-xs text-white/70 leading-relaxed">
+          <div className="space-y-2 text-xs text-slate-300 leading-relaxed">
             {riskData.compliance_notes.map((note: string) => (
               <p key={note}>• {note}</p>
             ))}

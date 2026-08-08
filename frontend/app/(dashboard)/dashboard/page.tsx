@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import {
-  TrendingUp, Clock, DollarSign, ArrowRight, Play,
+  TrendingUp, Clock, IndianRupee, ArrowRight, Play,
   ChevronRight, Target, Sparkles, Zap, Shield, GitBranch,
   BarChart2, MessageSquare, Map, ShoppingBag, FileText,
   Users, CheckCircle2, Search, ArrowUpRight, Rocket, X
@@ -18,7 +18,8 @@ import {
 } from 'recharts';
 import { useAppStore } from '@/store/useAppStore';
 import { opportunitiesAPI, roiAPI } from '@/lib/api';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, formatCompactINR } from '@/lib/utils';
+import { FeatureInfoTooltip, TechStackInfo } from '@/components/ui/FeatureInfoTooltip';
 
 export default function DashboardPage() {
   const { opportunities, roiData, setOpportunities, setRoiData } = useAppStore();
@@ -56,9 +57,9 @@ export default function DashboardPage() {
 
   const kpis = [
     {
-      icon: DollarSign,
+      icon: IndianRupee,
       label: 'ANNUAL COST SAVINGS',
-      value: summary ? formatCurrency(summary.annual_cost_savings) : '$294,060',
+      value: summary ? formatCurrency(summary.annual_cost_savings) : '₹8,50,000',
       subtext: 'Identified across top 3 automation vectors',
       color: 'bg-emerald-500',
       badge: '+94% efficiency',
@@ -67,8 +68,8 @@ export default function DashboardPage() {
     {
       icon: Clock,
       label: 'WEEKLY HOURS SAVED',
-      value: summary ? `${summary.total_hours_saved_per_week} hrs/wk` : '29 hrs/wk',
-      subtext: 'Equivalent to 1.5 full-time hires',
+      value: summary ? `${summary.total_hours_saved_per_week} hrs/wk` : '21 hrs/wk',
+      subtext: 'Equivalent to 1.2 full-time hires',
       color: 'bg-indigo-500',
       badge: 'Immediate impact',
       badgeColor: 'text-indigo-300 bg-indigo-500/10 border-indigo-500/20',
@@ -76,8 +77,8 @@ export default function DashboardPage() {
     {
       icon: TrendingUp,
       label: 'EXPECTED ROI',
-      value: summary ? `${summary.roi_percentage}%` : '1076.2%',
-      subtext: '1 month payback period',
+      value: summary ? `${summary.roi_percentage}%` : '285%',
+      subtext: '2.1 month payback period',
       color: 'bg-amber-500',
       badge: 'High return',
       badgeColor: 'text-amber-300 bg-amber-500/10 border-amber-500/20',
@@ -93,13 +94,19 @@ export default function DashboardPage() {
     },
   ];
 
-  const features = [
+  const features: Array<{ title: string; desc: string; icon: any; color: string; href: string; info: TechStackInfo }> = [
     {
       title: 'AI Founder Interview',
       desc: 'Understand your business with an intelligent conversation.',
       icon: MessageSquare,
       color: 'from-indigo-600 to-purple-600',
       href: '/dashboard/interview',
+      info: {
+        title: 'AI Founder Interview',
+        techStack: ['Next.js 16', 'Quart Async Python', 'OpenAI GPT-4o', 'SSE Streaming', 'Zustand'],
+        implementation: 'Multi-turn conversational discovery wizard powered by GPT-4o streaming APIs. Extracts structured JSON schemas of repetitive business processes.',
+        howItWorks: 'Asks targeted questions about weekly team hours, software stack, and operational bottlenecks, parsing responses into actionable process models.',
+      },
     },
     {
       title: 'Digital Twin Workflows',
@@ -107,6 +114,12 @@ export default function DashboardPage() {
       icon: GitBranch,
       color: 'from-blue-600 to-cyan-500',
       href: '/dashboard/workflow',
+      info: {
+        title: 'Digital Twin Flow Engine',
+        techStack: ['React Flow (@xyflow)', 'Framer Motion', 'Canvas Engine', 'TypeScript'],
+        implementation: 'Interactive flow graph visualizer contrasting manual process states against automated AI agent architectures.',
+        howItWorks: 'Renders custom SVG node components with animated streaming edges to demonstrate 98%+ execution velocity speedups.',
+      },
     },
     {
       title: 'ROI Calculator',
@@ -114,6 +127,12 @@ export default function DashboardPage() {
       icon: BarChart2,
       color: 'from-emerald-600 to-teal-500',
       href: '/dashboard/roi',
+      info: {
+        title: 'ROI Financial Modeling Engine',
+        techStack: ['Recharts SVG', 'React Sliders', 'Zustand Store', 'INR Math Engine'],
+        implementation: 'Dynamic cash flow calculator computing 24-month cumulative savings net of implementation capex and licensing.',
+        howItWorks: 'Parameters like hourly rates and setup budgets dynamically recalculate financial projections in real time.',
+      },
     },
     {
       title: 'Implementation Roadmap',
@@ -121,6 +140,12 @@ export default function DashboardPage() {
       icon: Map,
       color: 'from-purple-600 to-pink-600',
       href: '/dashboard/roadmap',
+      info: {
+        title: 'Phased Implementation Planner',
+        techStack: ['TypeScript', 'Framer Motion', 'TailwindCSS v3', 'Quart Blueprint'],
+        implementation: 'Phased 24-week rollout planner categorizing automation projects into Quick Wins, Core Systems, and AI Agents.',
+        howItWorks: 'Prioritizes projects by effort-to-value ratios, assigning responsible team leads, tool stacks, and week-by-week milestones.',
+      },
     },
     {
       title: 'AI Marketplace',
@@ -128,6 +153,12 @@ export default function DashboardPage() {
       icon: ShoppingBag,
       color: 'from-pink-600 to-rose-500',
       href: '/dashboard/marketplace',
+      info: {
+        title: 'AI Tool & Agent Catalog',
+        techStack: ['Next.js App Router', 'Zustand Filters', 'REST API', 'TailwindCSS'],
+        implementation: 'Curated enterprise AI software registry categorized by LLMs, Sales AI, Support Agents, and No-Code Workflows.',
+        howItWorks: 'Filters vendors by integration complexity, pricing models, and specific process requirements extracted from your audit.',
+      },
     },
     {
       title: 'Executive PDF Report',
@@ -135,6 +166,12 @@ export default function DashboardPage() {
       icon: FileText,
       color: 'from-amber-600 to-orange-500',
       href: '/dashboard/report',
+      info: {
+        title: 'Executive Advisory Report Generator',
+        techStack: ['ReportLab Python', 'HTML5 Print Engine', 'Blob API', 'PDF Canvas'],
+        implementation: 'Generates board-ready executive PDF advisory reports with process tables, ROI forecasts, and governance notes.',
+        howItWorks: 'Clicking Export Report triggers instant PDF generation formatted for board presentations and investor demos.',
+      },
     },
   ];
 
@@ -365,12 +402,12 @@ export default function DashboardPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
             >
-              <Link
-                href={feat.href}
-                className="p-6 rounded-2xl bg-[#0e1122] border border-white/10 hover:border-white/20 transition-all block group space-y-4 h-full shadow-lg"
-              >
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${feat.color} flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform`}>
-                  <feat.icon className="w-5 h-5" />
+              <div className="p-6 rounded-2xl bg-[#0e1122] border border-white/10 hover:border-white/20 transition-all flex flex-col justify-between space-y-4 h-full shadow-lg group">
+                <div className="flex items-center justify-between">
+                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${feat.color} flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform`}>
+                    <feat.icon className="w-5 h-5" />
+                  </div>
+                  <FeatureInfoTooltip info={feat.info} />
                 </div>
                 <div className="space-y-1">
                   <h4 className="font-bold text-white text-base group-hover:text-cyan-400 transition-colors" style={{ fontFamily: 'Outfit, sans-serif' }}>
@@ -378,10 +415,13 @@ export default function DashboardPage() {
                   </h4>
                   <p className="text-xs text-slate-400 leading-relaxed">{feat.desc}</p>
                 </div>
-                <div className="pt-2 flex items-center text-xs font-semibold text-indigo-400 group-hover:translate-x-1 transition-transform">
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </div>
-              </Link>
+                <Link
+                  href={feat.href}
+                  className="pt-2 flex items-center text-xs font-semibold text-indigo-400 group-hover:translate-x-1 transition-transform"
+                >
+                  Explore <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                </Link>
+              </div>
             </motion.div>
           ))}
         </div>

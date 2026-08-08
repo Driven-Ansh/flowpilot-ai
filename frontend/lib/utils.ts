@@ -10,22 +10,35 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Format a number as currency (USD)
+ * Format a number as Indian Rupees (INR - ₹)
  */
 export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-IN', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'INR',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(value);
 }
 
 /**
- * Format a number with thousands separators
+ * Format currency in Indian Compact Lakhs / Crores notation (e.g. ₹8.5L, ₹1.2Cr)
+ */
+export function formatCompactINR(value: number): string {
+  if (value >= 10000000) {
+    return `₹${(value / 10000000).toFixed(2)} Cr`;
+  }
+  if (value >= 100000) {
+    return `₹${(value / 100000).toFixed(1)} Lakhs`;
+  }
+  return formatCurrency(value);
+}
+
+/**
+ * Format a number with Indian thousands separators
  */
 export function formatNumber(value: number): string {
-  return new Intl.NumberFormat('en-US').format(value);
+  return new Intl.NumberFormat('en-IN').format(value);
 }
 
 /**

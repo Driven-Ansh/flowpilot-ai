@@ -2,14 +2,21 @@
 
 /**
  * AI Agent Marketplace Page (Nimblize Clean Aesthetic)
- * 
- * Filterable catalog of curated enterprise AI software solutions.
+ * Filterable catalog of curated enterprise AI software solutions with FeatureInfoTooltip.
  */
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, ExternalLink, Star, Filter, Sparkles } from 'lucide-react';
 import { marketplaceAPI } from '@/lib/api';
 import type { AiTool } from '@/types';
+import { FeatureInfoTooltip } from '@/components/ui/FeatureInfoTooltip';
+
+const MARKETPLACE_TOOLTIP = {
+  title: 'Enterprise AI Agent Catalog',
+  techStack: ['Next.js 16', 'Zustand Filter Store', 'Quart REST APIs', 'TailwindCSS v3'],
+  implementation: 'Indexes commercial AI solutions mapped to process audit outputs, rating vendor setup complexity, pricing models, and rating benchmarks.',
+  howItWorks: 'Enables leadership to evaluate pre-vetted AI tools matching identified process bottlenecks before purchasing or building custom integrations.',
+};
 
 const CATEGORIES = ['All', 'Foundation Model', 'Sales Intelligence', 'Customer Support AI', 'Workflow Automation', 'Productivity AI', 'CRM AI', 'Conversational AI'];
 
@@ -26,7 +33,7 @@ function ToolCard({ tool, index }: { tool: AiTool; index: number }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.07 }}
-      className="p-6 rounded-2xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/20 transition-all flex flex-col justify-between space-y-4"
+      className="p-6 rounded-2xl border border-white/10 bg-[#0e1122] hover:bg-white/[0.04] hover:border-white/20 transition-all flex flex-col justify-between space-y-4 shadow-lg"
     >
       <div className="space-y-3">
         {/* Header */}
@@ -41,10 +48,10 @@ function ToolCard({ tool, index }: { tool: AiTool; index: number }) {
               </h3>
               <div className="flex items-center gap-1 flex-shrink-0">
                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                <span className="text-xs font-bold text-white/70">{tool.rating}</span>
+                <span className="text-xs font-bold text-slate-300">{tool.rating}</span>
               </div>
             </div>
-            <p className="text-xs text-white/40">{tool.vendor}</p>
+            <p className="text-xs text-slate-400">{tool.vendor}</p>
           </div>
         </div>
 
@@ -65,12 +72,12 @@ function ToolCard({ tool, index }: { tool: AiTool; index: number }) {
           </span>
         </div>
 
-        <p className="text-xs text-white/60 leading-relaxed">{tool.description}</p>
+        <p className="text-xs text-slate-300 leading-relaxed">{tool.description}</p>
 
         {/* Use Cases */}
         <div className="flex flex-wrap gap-1.5 pt-1">
           {tool.use_cases.slice(0, 3).map((uc) => (
-            <span key={uc} className="text-xs px-2.5 py-1 rounded-md border border-white/5 bg-white/[0.03] text-white/40">
+            <span key={uc} className="text-xs px-2.5 py-1 rounded-md border border-white/10 bg-white/[0.03] text-slate-400">
               {uc}
             </span>
           ))}
@@ -78,12 +85,12 @@ function ToolCard({ tool, index }: { tool: AiTool; index: number }) {
       </div>
 
       {/* Footer Price & Action */}
-      <div className="flex items-center justify-between pt-4 border-t border-white/5">
+      <div className="flex items-center justify-between pt-4 border-t border-white/10">
         <div>
-          <p className="text-xs text-white/40">{tool.pricing_model}</p>
+          <p className="text-xs text-slate-400">{tool.pricing_model}</p>
           <p className="text-sm font-bold text-white">{tool.starting_price}</p>
         </div>
-        <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-indigo-300 border border-indigo-500/25 bg-indigo-500/10 hover:bg-indigo-500/20 transition-all">
+        <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-indigo-300 border border-indigo-500/25 bg-indigo-500/10 hover:bg-indigo-500/20 transition-all cursor-pointer">
           Explore Tool <ExternalLink className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -113,18 +120,21 @@ export default function MarketplacePage() {
   });
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="space-y-8 max-w-7xl mx-auto pb-12">
       {/* Header Banner */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-8 rounded-3xl border border-white/10 bg-white/[0.02] flex flex-col md:flex-row md:items-center justify-between gap-6"
+        className="p-8 rounded-3xl border border-white/10 bg-[#0e1122] flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-lg"
       >
-        <div>
-          <h1 className="text-2xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            Enterprise AI Agent & Tool Marketplace
-          </h1>
-          <p className="text-sm text-white/50 mt-1">
+        <div className="space-y-1">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              Enterprise AI Agent & Tool Marketplace
+            </h1>
+            <FeatureInfoTooltip info={MARKETPLACE_TOOLTIP} />
+          </div>
+          <p className="text-sm text-slate-400">
             Curated directory of vetted commercial AI tools matched to your identified process vectors.
           </p>
         </div>
@@ -133,13 +143,13 @@ export default function MarketplacePage() {
       {/* Search & Category Filter */}
       <div className="space-y-4">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
           <input
             type="text"
             placeholder="Search AI agents by name, category, or capability..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-white/10 bg-white/[0.03] text-white placeholder-white/30 text-sm outline-none focus:border-indigo-500 transition-colors"
+            className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-white/10 bg-[#0e1122] text-white placeholder-slate-500 text-sm outline-none focus:border-indigo-500 transition-colors shadow-sm"
           />
         </div>
 
@@ -148,10 +158,10 @@ export default function MarketplacePage() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                 selectedCategory === cat
                   ? 'bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 shadow-sm'
-                  : 'border border-white/10 bg-white/[0.02] text-white/50 hover:text-white/80 hover:border-white/20'
+                  : 'border border-white/10 bg-white/[0.02] text-slate-400 hover:text-white hover:border-white/20'
               }`}
             >
               {cat}

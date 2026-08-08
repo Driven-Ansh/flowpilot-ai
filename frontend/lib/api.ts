@@ -1,8 +1,8 @@
 /**
  * API client for FlowPilot AI backend.
  * 
- * Features automatic client-side fallback data so Vercel deployments
- * and standalone client demos run 100% seamlessly even without backend connectivity.
+ * Features automatic client-side fallback data with realistic Indian startup metrics (INR - ₹)
+ * and dynamic calculations for Vercel deployments and standalone client demos.
  */
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
@@ -35,22 +35,22 @@ async function fetchAPI<T>(path: string, options?: RequestInit, fallbackData?: T
   }
 }
 
-// --- CLIENT-SIDE MOCK FALLBACK DATA ---
+// --- CLIENT-SIDE MOCK FALLBACK DATA (FEASIBLE INR STANDARDS) ---
 const MOCK_OPPORTUNITIES = [
   {
     id: '1',
-    name: 'AI Lead Scoring & Qualification',
+    name: 'AI Lead Qualification & CRM Sync',
     process: 'Lead Qualification & CRM Updates',
     department: 'Sales',
-    description: 'Deploy an AI model to instantly score inbound leads (0-100) from behavior & firmographics, auto-enriching Salesforce.',
+    description: 'Deploy an AI model to score inbound leads (0-100) from behavioral data, auto-enriching Salesforce & HubSpot.',
     automation_type: 'AI/ML Model',
     feasibility_score: 92,
     impact_score: 88,
     roi_score: 95,
-    estimated_hours_saved_per_week: 10,
-    estimated_annual_cost_savings: 62400,
+    estimated_hours_saved_per_week: 8,
+    estimated_annual_cost_savings: 320000,
     implementation_effort: 'Medium',
-    time_to_value_weeks: 6,
+    time_to_value_weeks: 4,
     recommended_tools: ['Clay.com', 'HubSpot AI', 'Salesforce Einstein', 'OpenAI GPT-4o'],
     risk_level: 'Low',
   },
@@ -64,8 +64,8 @@ const MOCK_OPPORTUNITIES = [
     feasibility_score: 96,
     impact_score: 75,
     roi_score: 85,
-    estimated_hours_saved_per_week: 7,
-    estimated_annual_cost_savings: 43680,
+    estimated_hours_saved_per_week: 6,
+    estimated_annual_cost_savings: 240000,
     implementation_effort: 'Low',
     time_to_value_weeks: 2,
     recommended_tools: ['Zapier AI', 'Looker Studio', 'Notion AI', 'GPT-4o API'],
@@ -73,7 +73,7 @@ const MOCK_OPPORTUNITIES = [
   },
   {
     id: '3',
-    name: 'AI Customer Support Triage',
+    name: 'AI Support Triage & Auto-Reply',
     process: 'Customer Support Ticket Routing',
     department: 'Support',
     description: 'Deploy conversational AI agents to auto-resolve 40%+ of repetitive support tickets and route high-value escalations.',
@@ -81,39 +81,55 @@ const MOCK_OPPORTUNITIES = [
     feasibility_score: 85,
     impact_score: 94,
     roi_score: 90,
-    estimated_hours_saved_per_week: 12,
-    estimated_annual_cost_savings: 74880,
+    estimated_hours_saved_per_week: 7,
+    estimated_annual_cost_savings: 290000,
     implementation_effort: 'Medium',
-    time_to_value_weeks: 8,
+    time_to_value_weeks: 6,
     recommended_tools: ['Intercom Fin', 'Zendesk AI', 'Sierra AI', 'GPT-4o API'],
     risk_level: 'Low',
   },
 ];
 
-const MOCK_ROI = {
-  summary: {
-    total_hours_saved_per_week: 29.0,
-    annual_hours_saved: 1508,
-    annual_cost_savings: 294060,
-    implementation_cost: 25000,
-    roi_percentage: 1076.2,
-    payback_months: 1.0,
-    three_year_value: 857180,
-  },
-  monthly_projections: Array.from({ length: 24 }, (_, i) => ({
+export function calculateDynamicROI(hourlyRate: number = 650, setupBudget: number = 150000, opportunities: any[] = MOCK_OPPORTUNITIES) {
+  const totalHours = opportunities.reduce((acc, o) => acc + (o.estimated_hours_saved_per_week || 7), 0);
+  const annualHours = totalHours * 52;
+  const laborSavings = annualHours * hourlyRate;
+  const directSavings = opportunities.reduce((acc, o) => acc + (o.estimated_annual_cost_savings || 250000), 0);
+  const totalAnnualSavings = laborSavings + Math.round(directSavings * 0.4);
+  const roiPercentage = setupBudget > 0 ? Math.round(((totalAnnualSavings - setupBudget) / setupBudget) * 100) : 285;
+  const paybackMonths = totalAnnualSavings > 0 ? Number((setupBudget / (totalAnnualSavings / 12)).toFixed(1)) : 2.1;
+  const threeYearValue = (totalAnnualSavings * 3) - setupBudget;
+
+  const monthly_projections = Array.from({ length: 24 }, (_, i) => ({
     month: `M${i + 1}`,
-    cumulative_savings: Math.round(-25000 + (i + 1) * (294060 / 12)),
-    monthly_savings: Math.round(294060 / 12),
-  })),
-  breakdown: [
-    { category: 'Labor Hours Recovered', value: 213200, color: '#6366f1' },
-    { category: 'Direct Software Cost Reduction', value: 80860, color: '#06b6d4' },
-  ],
-};
+    cumulative_savings: Math.round(-setupBudget + (i + 1) * (totalAnnualSavings / 12)),
+    monthly_savings: Math.round(totalAnnualSavings / 12),
+  }));
+
+  return {
+    summary: {
+      total_hours_saved_per_week: totalHours,
+      annual_hours_saved: annualHours,
+      annual_cost_savings: totalAnnualSavings,
+      implementation_cost: setupBudget,
+      hourly_rate: hourlyRate,
+      roi_percentage: roiPercentage,
+      payback_months: paybackMonths,
+      three_year_value: threeYearValue,
+    },
+    monthly_projections,
+    breakdown: [
+      { category: 'Labor Hours Recovered', value: laborSavings, color: '#6366f1' },
+      { category: 'Direct Operational Efficiency', value: Math.round(directSavings * 0.4), color: '#06b6d4' },
+    ],
+  };
+}
+
+const MOCK_ROI = calculateDynamicROI(650, 150000, MOCK_OPPORTUNITIES);
 
 const MOCK_ROADMAP = {
-  total_weeks: 24,
-  total_estimated_value: '$294,060/yr',
+  total_weeks: 20,
+  total_estimated_value: '₹8,50,000/yr',
   phases: [
     {
       phase: 1,
@@ -131,19 +147,7 @@ const MOCK_ROADMAP = {
           owner: 'Operations',
           tools: ['Zapier AI', 'Looker Studio'],
           status: 'planned',
-          roi_estimate: '$43,680/yr',
-        },
-        {
-          id: 'rp1-2',
-          title: 'AI Email Draft Generation',
-          description: 'Deploy AI templates for sales outreach & followup responses.',
-          effort: 'Low',
-          priority: 'Medium',
-          estimated_weeks: 1,
-          owner: 'Sales',
-          tools: ['GPT-4o API', 'HubSpot'],
-          status: 'planned',
-          roi_estimate: '$15,000/yr',
+          roi_estimate: '₹2,40,000/yr',
         },
       ],
     },
@@ -163,14 +167,14 @@ const MOCK_ROADMAP = {
           owner: 'Sales + Engineering',
           tools: ['Clay.com', 'Salesforce Einstein', 'GPT-4o API'],
           status: 'planned',
-          roi_estimate: '$62,400/yr',
+          roi_estimate: '₹3,20,000/yr',
         },
       ],
     },
     {
       phase: 3,
       title: 'Advanced AI Agents',
-      duration_weeks: 12,
+      duration_weeks: 8,
       color: '#a855f7',
       items: [
         {
@@ -179,11 +183,11 @@ const MOCK_ROADMAP = {
           description: 'Deploy conversational AI agent for 40%+ ticket resolution.',
           effort: 'High',
           priority: 'High',
-          estimated_weeks: 8,
+          estimated_weeks: 6,
           owner: 'Support + Engineering',
           tools: ['Intercom Fin', 'Sierra AI', 'GPT-4o API'],
           status: 'planned',
-          roi_estimate: '$74,880/yr',
+          roi_estimate: '₹2,90,000/yr',
         },
       ],
     },
@@ -191,19 +195,19 @@ const MOCK_ROADMAP = {
 };
 
 const MOCK_TOOLS = [
-  { id: '1', name: 'OpenAI GPT-4o', vendor: 'OpenAI', category: 'Foundation Model', description: 'State-of-the-art multimodal LLM for reasoning & structured analysis.', pricing_model: 'Pay-per-token', starting_price: '$0.005/1K tokens', integration_complexity: 'Low', rating: 4.9, use_cases: ['Content generation', 'Data extraction', 'Code execution'], tags: ['LLM', 'Multimodal'], logo_emoji: '🧠' },
-  { id: '2', name: 'Clay.com', vendor: 'Clay', category: 'Sales Intelligence', description: 'AI-powered data enrichment and automated outreach for revenue teams.', pricing_model: 'Subscription', starting_price: '$149/month', integration_complexity: 'Low', rating: 4.8, use_cases: ['Lead enrichment', 'Outreach automation'], tags: ['Sales', 'Enrichment'], logo_emoji: '🎯' },
-  { id: '3', name: 'Intercom Fin', vendor: 'Intercom', category: 'Customer Support AI', description: 'Autonomous AI agent that resolves 40%+ support tickets instantly.', pricing_model: 'Per resolution', starting_price: '$0.99/resolution', integration_complexity: 'Low', rating: 4.7, use_cases: ['Ticket resolution', 'FAQ automation'], tags: ['Support', 'AI Agent'], logo_emoji: '💬' },
-  { id: '4', name: 'Zapier AI', vendor: 'Zapier', category: 'Workflow Automation', description: 'Connect 6,000+ apps with AI-powered multi-step automation.', pricing_model: 'Subscription', starting_price: '$19.99/month', integration_complexity: 'Very Low', rating: 4.6, use_cases: ['App integration', 'Data sync'], tags: ['No-Code', 'Automation'], logo_emoji: '⚡' },
-  { id: '5', name: 'Notion AI', vendor: 'Notion', category: 'Productivity AI', description: 'AI writing assistant and workspace knowledge base automation.', pricing_model: 'Add-on', starting_price: '$8/user/month', integration_complexity: 'Very Low', rating: 4.5, use_cases: ['Documentation', 'Meeting summaries'], tags: ['Productivity', 'Docs'], logo_emoji: '📝' },
-  { id: '6', name: 'Salesforce Einstein', vendor: 'Salesforce', category: 'CRM AI', description: 'Embedded CRM intelligence for lead scoring and pipeline analytics.', pricing_model: 'Add-on', starting_price: '$50/user/month', integration_complexity: 'Medium', rating: 4.4, use_cases: ['Lead scoring', 'Sales forecasting'], tags: ['CRM', 'Enterprise'], logo_emoji: '☁️' },
+  { id: '1', name: 'OpenAI GPT-4o', vendor: 'OpenAI', category: 'Foundation Model', description: 'State-of-the-art multimodal LLM for reasoning & structured analysis.', pricing_model: 'Pay-per-token', starting_price: '₹0.40/1K tokens', integration_complexity: 'Low', rating: 4.9, use_cases: ['Content generation', 'Data extraction', 'Code execution'], tags: ['LLM', 'Multimodal'], logo_emoji: '🧠' },
+  { id: '2', name: 'Clay.com', vendor: 'Clay', category: 'Sales Intelligence', description: 'AI-powered data enrichment and automated outreach for revenue teams.', pricing_model: 'Subscription', starting_price: '₹12,500/month', integration_complexity: 'Low', rating: 4.8, use_cases: ['Lead enrichment', 'Outreach automation'], tags: ['Sales', 'Enrichment'], logo_emoji: '🎯' },
+  { id: '3', name: 'Intercom Fin', vendor: 'Intercom', category: 'Customer Support AI', description: 'Autonomous AI agent that resolves 40%+ support tickets instantly.', pricing_model: 'Per resolution', starting_price: '₹80/resolution', integration_complexity: 'Low', rating: 4.7, use_cases: ['Ticket resolution', 'FAQ automation'], tags: ['Support', 'AI Agent'], logo_emoji: '💬' },
+  { id: '4', name: 'Zapier AI', vendor: 'Zapier', category: 'Workflow Automation', description: 'Connect 6,000+ apps with AI-powered multi-step automation.', pricing_model: 'Subscription', starting_price: '₹1,600/month', integration_complexity: 'Very Low', rating: 4.6, use_cases: ['App integration', 'Data sync'], tags: ['No-Code', 'Automation'], logo_emoji: '⚡' },
+  { id: '5', name: 'Notion AI', vendor: 'Notion', category: 'Productivity AI', description: 'AI writing assistant and workspace knowledge base automation.', pricing_model: 'Add-on', starting_price: '₹650/user/month', integration_complexity: 'Very Low', rating: 4.5, use_cases: ['Documentation', 'Meeting summaries'], tags: ['Productivity', 'Docs'], logo_emoji: '📝' },
+  { id: '6', name: 'Salesforce Einstein', vendor: 'Salesforce', category: 'CRM AI', description: 'Embedded CRM intelligence for lead scoring and pipeline analytics.', pricing_model: 'Add-on', starting_price: '₹4,000/user/month', integration_complexity: 'Medium', rating: 4.4, use_cases: ['Lead scoring', 'Sales forecasting'], tags: ['CRM', 'Enterprise'], logo_emoji: '☁️' },
 ];
 
 const MOCK_RISK = {
   overall_risk_level: 'Low-Medium',
   risk_score: 28,
   categories: [
-    { category: 'Data Privacy', level: 'Medium', score: 42, description: 'Customer data processed by AI requires GDPR/CCPA compliance verification.', mitigations: ['Implement data anonymization before LLM API calls', 'Ensure vendor DPAs are active'], color: '#f59e0b' },
+    { category: 'Data Privacy', level: 'Medium', score: 42, description: 'Customer data processed by AI requires DPDP Act / GDPR compliance verification.', mitigations: ['Implement data anonymization before LLM API calls', 'Ensure vendor DPAs are active'], color: '#f59e0b' },
     { category: 'Model Accuracy', level: 'Low', score: 25, description: 'AI models require human-in-the-loop validation for high-stakes decisions.', mitigations: ['A/B test against manual baseline', 'Set confidence thresholds'], color: '#06b6d4' },
     { category: 'Vendor Lock-in', level: 'Low', score: 20, description: 'Reliance on specific AI vendors creates potential lock-in risks.', mitigations: ['Maintain provider-agnostic abstraction layer'], color: '#06b6d4' },
     { category: 'Change Management', level: 'Medium', score: 35, description: 'Team adoption requires clear workflow training.', mitigations: ['Phased rollout timeline', 'Internal champions'], color: '#f59e0b' },
@@ -220,7 +224,7 @@ const MOCK_PROCESSES = [
     name: 'Lead Qualification & CRM Updates',
     department: 'Sales',
     frequency: 'Daily',
-    time_per_week_hours: 12,
+    time_per_week_hours: 8,
     people_involved: 3,
     description: 'SDRs manually review inbound leads, score firmographics, and update Salesforce CRM records.',
     pain_points: ['Manual data entry', 'Inconsistent lead scoring', 'Slow response times'],
@@ -233,7 +237,7 @@ const MOCK_PROCESSES = [
     name: 'Weekly Performance Reporting',
     department: 'Operations',
     frequency: 'Weekly',
-    time_per_week_hours: 8,
+    time_per_week_hours: 6,
     people_involved: 2,
     description: 'Team manually compiles metrics from Mixpanel, Stripe, and Sheets into Google Slides presentations.',
     pain_points: ['Time-consuming assembly', 'Human calculation errors', 'Delayed executive decision making'],
@@ -246,7 +250,7 @@ const MOCK_PROCESSES = [
     name: 'Customer Support Ticket Routing',
     department: 'Support',
     frequency: 'Daily',
-    time_per_week_hours: 15,
+    time_per_week_hours: 7,
     people_involved: 4,
     description: 'Support agents manually triage incoming tickets, tag categories, and answer repetitive FAQs.',
     pain_points: ['High ticket volume', 'First response time latency', 'Agent burnout from repetitive queries'],
@@ -264,8 +268,8 @@ export const interviewAPI = {
       body: JSON.stringify(data),
     }, {
       session_id: 'session-demo',
-      message: "Hello! I'm your AI Automation Advisor. Let's analyze your business operations to identify high-ROI automation targets.",
-      company_context: `${data.company_name} | ${data.industry}`,
+      message: `Hello ${data.company_name || 'Founder'}! I'm your AI Automation Advisor. Let's analyze your business operations to identify high-ROI automation targets.`,
+      company_context: `${data.company_name || 'Startup'} | ${data.industry || 'FinTech'}`,
     }),
 
   sendMessage: (data: any) =>
@@ -299,7 +303,7 @@ export const opportunitiesAPI = {
 
 export const roiAPI = {
   getMock: () => fetchAPI<any>('/roi/mock', undefined, MOCK_ROI),
-  calculate: (data: any) => fetchAPI<any>('/roi/calculate', { method: 'POST', body: JSON.stringify(data) }, MOCK_ROI),
+  calculate: (data: any) => fetchAPI<any>('/roi/calculate', { method: 'POST', body: JSON.stringify(data) }, calculateDynamicROI(data.hourly_rate, data.implementation_cost, data.opportunities || MOCK_OPPORTUNITIES)),
 };
 
 export const roadmapAPI = {
@@ -329,24 +333,86 @@ export const reportAPI = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error('Backend unavailable');
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `flowpilot-report-${(data.company_name || 'company').toLowerCase().replace(/\s+/g, '-')}.pdf`;
-      a.click();
-      URL.revokeObjectURL(url);
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `FlowPilot_Executive_Report_${(data.company_name || 'Startup').toLowerCase().replace(/\s+/g, '_')}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+        return;
+      }
     } catch (e) {
-      // Client-side text summary fallback
-      const text = `FLOWPILOT AI - EXECUTIVE AUTOMATION REPORT\nPrepared for: ${data.company_name || 'Acme Corp'}\n\nIdentified Annual Savings: $294,060/yr\nWeekly Hours Saved: 29.0 hrs/wk\nExpected ROI: 1076.2%\nPayback Period: 1.0 month\n\nTop Priority Vectors:\n1. AI Lead Scoring & Qualification ($62,400/yr)\n2. Automated Performance Reporting ($43,680/yr)\n3. AI Customer Support Triage ($74,880/yr)`;
-      const blob = new Blob([text], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `flowpilot-report-summary.txt`;
-      a.click();
-      URL.revokeObjectURL(url);
+      // Fallback
+    }
+
+    // High quality HTML print trigger for PDF saving
+    const company = data.company_name || 'FlowPilot Client';
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>FlowPilot_Executive_Report_${company}.pdf</title>
+          <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #070914; color: #f8fafc; padding: 40px; }
+            .header { border-bottom: 2px solid #6366f1; padding-bottom: 20px; margin-bottom: 30px; }
+            h1 { color: #38bdf8; font-size: 28px; margin: 0; }
+            .meta { color: #94a3b8; font-size: 14px; margin-top: 5px; }
+            .card { background: #0e1122; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+            .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+            .kpi { background: #13172e; padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); }
+            .kpi-val { font-size: 22px; font-weight: bold; color: #22d3ee; }
+            .kpi-lbl { font-size: 11px; text-transform: uppercase; color: #94a3b8; }
+            table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+            th, td { text-align: left; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 13px; }
+            th { color: #818cf8; text-transform: uppercase; font-size: 11px; }
+          </style>
+        </head>
+        <body>
+          <div className="header">
+            <h1>FlowPilot AI — Executive Automation Advisory Report</h1>
+            <div className="meta">Prepared for: <strong>${company}</strong> | Industry: ${data.industry || 'FinTech'} | Date: ${new Date().toLocaleDateString()}</div>
+          </div>
+
+          <div className="kpi-grid">
+            <div className="kpi"><div className="kpi-lbl">Annual Cost Savings</div><div className="kpi-val">₹8,50,000</div></div>
+            <div className="kpi"><div className="kpi-lbl">Hours Recovered</div><div className="kpi-val">21 hrs/wk</div></div>
+            <div className="kpi"><div className="kpi-lbl">Expected ROI</div><div className="kpi-val">285%</div></div>
+            <div className="kpi"><div className="kpi-lbl">Payback Period</div><div className="kpi-val">2.1 Months</div></div>
+          </div>
+
+          <div className="card">
+            <h3 style="color: #38bdf8; margin-top: 0;">Top Identified Automation Vectors</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Priority Vector</th>
+                  <th>Department</th>
+                  <th>Weekly Time Saved</th>
+                  <th>Annual Value</th>
+                  <th>Feasibility Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>AI Lead Qualification & CRM Sync</td><td>Sales</td><td>8 hrs/wk</td><td>₹3,20,000/yr</td><td>92/100</td></tr>
+                <tr><td>Automated Performance Reporting</td><td>Operations</td><td>6 hrs/wk</td><td>₹2,40,000/yr</td><td>96/100</td></tr>
+                <tr><td>AI Support Triage & Auto-Reply</td><td>Support</td><td>7 hrs/wk</td><td>₹2,90,000/yr</td><td>85/100</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <script>
+            window.onload = function() {
+              window.print();
+            };
+          </script>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
     }
   },
 };
