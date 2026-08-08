@@ -87,6 +87,7 @@ export interface AiTool {
   use_cases: string[];
   tags: string[];
   logo_emoji: string;
+  official_url?: string;
 }
 
 export interface RiskCategory {

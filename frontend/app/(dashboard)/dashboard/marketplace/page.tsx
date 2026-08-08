@@ -90,9 +90,14 @@ function ToolCard({ tool, index }: { tool: AiTool; index: number }) {
           <p className="text-xs text-slate-400">{tool.pricing_model}</p>
           <p className="text-sm font-bold text-white">{tool.starting_price}</p>
         </div>
-        <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-indigo-300 border border-indigo-500/25 bg-indigo-500/10 hover:bg-indigo-500/20 transition-all cursor-pointer">
+        <a
+          href={tool.official_url || '#'}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-indigo-300 border border-indigo-500/25 bg-indigo-500/10 hover:bg-indigo-500/20 hover:text-white transition-all cursor-pointer"
+        >
           Explore Tool <ExternalLink className="w-3.5 h-3.5" />
-        </button>
+        </a>
       </div>
     </motion.div>
   );
