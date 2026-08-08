@@ -163,37 +163,76 @@ export default function RoiPage() {
 
       {/* Charts Grid */}
       <div className="grid lg:grid-cols-3 gap-8">
-        {/* 24-Month Trajectory Area Chart */}
+        {/* 24-Month Trajectory Dual Area & Line Chart */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="lg:col-span-2 p-8 rounded-3xl border border-white/10 bg-[#0e1122] space-y-6 shadow-lg"
+          className="lg:col-span-2 p-8 rounded-3xl border border-white/10 bg-[#0e1122] space-y-6 shadow-lg relative overflow-hidden"
         >
-          <div>
-            <h3 className="font-bold text-lg text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
-              24-Month Cumulative Savings Trajectory (INR)
-            </h3>
-            <p className="text-xs text-slate-400">Net financial benefit over time following initial setup payback</p>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h3 className="font-bold text-lg text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                24-Month Cumulative Financial Trajectory (INR)
+              </h3>
+              <p className="text-xs text-slate-400">Non-linear compounding returns contrasting capex payback vs recurring yield velocity</p>
+            </div>
+            <div className="flex items-center gap-4 text-xs font-semibold">
+              <span className="flex items-center gap-1.5 text-cyan-300">
+                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400" /> Cumulative Net Benefit
+              </span>
+              <span className="flex items-center gap-1.5 text-indigo-400">
+                <span className="w-2.5 h-2.5 rounded-full bg-indigo-400" /> Monthly Yield Velocity
+              </span>
+            </div>
           </div>
 
-          <div className="h-72 w-full">
+          <div className="h-80 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={monthlyData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+              <AreaChart data={monthlyData} margin={{ top: 15, right: 15, left: 5, bottom: 5 }}>
                 <defs>
                   <linearGradient id="roiFullGradINR" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.45} />
+                    <stop offset="60%" stopColor="#6366f1" stopOpacity={0.15} />
+                    <stop offset="100%" stopColor="#6366f1" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="velocityGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#818cf8" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#818cf8" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                <XAxis dataKey="month" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} interval={2} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
+                <XAxis dataKey="month" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} interval={1} />
                 <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => formatCompactINR(v)} />
                 <Tooltip
-                  contentStyle={{ background: '#0a0c1a', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 12 }}
-                  formatter={(v: any) => [formatCurrency(v), 'Cumulative Net Savings']}
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0].payload;
+                      const isProfit = data.cumulative_savings >= 0;
+                      return (
+                        <div className="p-4 rounded-2xl bg-[#0a0c1a] border border-cyan-500/30 shadow-2xl space-y-2 text-xs backdrop-blur-xl">
+                          <div className="flex items-center justify-between border-b border-white/10 pb-1.5 gap-4">
+                            <span className="font-bold text-white font-mono">{data.month} Trajectory</span>
+                            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${isProfit ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-amber-400 bg-amber-500/10 border-amber-500/20'}`}>
+                              {isProfit ? '✨ Net Profit Zone' : '⏳ Payback Phase'}
+                            </span>
+                          </div>
+                          <div className="space-y-1">
+                            <p className="text-slate-400">
+                              Cumulative Net: <span className="font-extrabold text-cyan-300 ml-1">{formatCurrency(data.cumulative_savings)}</span>
+                            </p>
+                            <p className="text-slate-400">
+                              Monthly Yield Velocity: <span className="font-extrabold text-indigo-300 ml-1">{formatCurrency(data.monthly_savings)}/mo</span>
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
                 />
-                <Area type="monotone" dataKey="cumulative_savings" stroke="#3b82f6" strokeWidth={3} fill="url(#roiFullGradINR)" />
+                <Area type="monotone" dataKey="cumulative_savings" stroke="#06b6d4" strokeWidth={3.5} fill="url(#roiFullGradINR)" activeDot={{ r: 7, fill: '#06b6d4', stroke: '#ffffff', strokeWidth: 2 }} />
+                <Area type="monotone" dataKey="monthly_savings" stroke="#818cf8" strokeWidth={2} strokeDasharray="4 4" fill="url(#velocityGrad)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>

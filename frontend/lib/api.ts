@@ -100,11 +100,31 @@ export function calculateDynamicROI(hourlyRate: number = 650, setupBudget: numbe
   const paybackMonths = totalAnnualSavings > 0 ? Number((setupBudget / (totalAnnualSavings / 12)).toFixed(1)) : 2.1;
   const threeYearValue = (totalAnnualSavings * 3) - setupBudget;
 
-  const monthly_projections = Array.from({ length: 24 }, (_, i) => ({
-    month: `M${i + 1}`,
-    cumulative_savings: Math.round(-setupBudget + (i + 1) * (totalAnnualSavings / 12)),
-    monthly_savings: Math.round(totalAnnualSavings / 12),
-  }));
+  const baseMonthlyBenefit = totalAnnualSavings / 12;
+
+  // Non-linear compounding S-curve trajectory across 24 months
+  let runningCumulative = -setupBudget;
+  const monthly_projections = Array.from({ length: 24 }, (_, i) => {
+    const monthNum = i + 1;
+    // Multiplier accelerates after Month 3 (Phase 2) and Month 12 (Phase 3 AI Agents)
+    let rampFactor = 0.6;
+    if (monthNum <= 3) {
+      rampFactor = 0.75 + (monthNum * 0.1);
+    } else if (monthNum <= 12) {
+      rampFactor = 1.0 + ((monthNum - 3) * 0.04);
+    } else {
+      rampFactor = 1.35 + ((monthNum - 12) * 0.03);
+    }
+
+    const monthlyYield = Math.round(baseMonthlyBenefit * rampFactor);
+    runningCumulative += monthlyYield;
+
+    return {
+      month: `M${monthNum}`,
+      cumulative_savings: Math.round(runningCumulative),
+      monthly_savings: monthlyYield,
+    };
+  });
 
   return {
     summary: {

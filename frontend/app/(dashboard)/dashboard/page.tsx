@@ -293,40 +293,60 @@ export default function DashboardPage() {
           className="lg:col-span-8 p-6 md:p-8 rounded-2xl bg-[#0e1122] border border-white/10 space-y-6 shadow-lg relative overflow-hidden"
         >
           <div className="flex items-center justify-between">
-            <div>
+            <div className="flex items-center gap-2">
               <h3 className="font-bold text-lg text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                12-Month Cumulative ROI Forecast
+                12-Month Cumulative Financial Trajectory
               </h3>
-              <p className="text-xs text-slate-400">Projected cost savings net of setup & licensing investment</p>
+              <FeatureInfoTooltip info={{
+                title: '12-Month ROI Projection',
+                techStack: ['Recharts SVG', 'TypeScript 5', 'Zustand State'],
+                implementation: 'Compounding cash flow model plotting total Net Savings (INR ₹) over a 12-month post-implementation timeframe.',
+                howItWorks: 'Updates dynamically as user adjusts process velocity parameters and hourly labor inputs.',
+              }} />
             </div>
             <Link href="/dashboard/roi" className="text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
               Full Calculator <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="h-64 w-full relative">
+          <div className="h-64 w-full relative pt-2">
             {/* Total Savings Marker Pill */}
-            <div className="absolute top-2 right-12 px-3 py-1 rounded-xl bg-indigo-500/20 border border-indigo-500/40 text-right z-10">
-              <p className="text-xs font-black text-cyan-300">$294K</p>
-              <p className="text-[9px] text-slate-400 uppercase font-semibold">Total Savings</p>
+            <div className="absolute top-0 right-4 px-3 py-1 rounded-xl bg-indigo-500/20 border border-indigo-500/40 text-right z-10">
+              <p className="text-xs font-black text-cyan-300">
+                {summary ? formatCompactINR(summary.annual_cost_savings) : '₹8.5 Lakhs'}
+              </p>
+              <p className="text-[9px] text-slate-400 uppercase font-semibold">12-Mo Benefit</p>
             </div>
 
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart data={chartData} margin={{ top: 15, right: 10, left: -10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="dashboardRoiGradExact" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
+                    <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.45} />
                     <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                 <XAxis dataKey="month" tick={{ fill: '#94a3b8', fontSize: 10 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: '#94a3b8', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}K`} />
+                <YAxis tick={{ fill: '#94a3b8', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => formatCompactINR(v)} />
                 <Tooltip
-                  contentStyle={{ background: '#0a0c1a', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 12 }}
-                  formatter={(v: any) => [formatCurrency(v), 'Cumulative Savings']}
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0].payload;
+                      const isProfit = data.cumulative_savings >= 0;
+                      return (
+                        <div className="p-3 rounded-xl bg-[#0a0c1a] border border-cyan-500/30 shadow-2xl text-xs space-y-1 backdrop-blur-xl">
+                          <p className="font-bold text-white font-mono">{data.month}</p>
+                          <p className="text-slate-300">
+                            Cumulative: <span className="font-extrabold text-cyan-300">{formatCurrency(data.cumulative_savings)}</span>
+                          </p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
                 />
-                <Area type="monotone" dataKey="cumulative_savings" stroke="#3b82f6" strokeWidth={3} fill="url(#dashboardRoiGradExact)" />
+                <Area type="monotone" dataKey="cumulative_savings" stroke="#06b6d4" strokeWidth={3} fill="url(#dashboardRoiGradExact)" activeDot={{ r: 6, fill: '#06b6d4' }} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
